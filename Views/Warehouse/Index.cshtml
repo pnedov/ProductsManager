@@ -1,0 +1,130 @@
+﻿@model WarehouseViewModel
+
+<h1>Warehouse Items</h1>
+
+<form asp-action="Index" method="get">
+    <p>
+        Name: <input type="text" name="SearchString" value="@Model.SearchString" />
+        Supplier: <input type="text" name="Supplier" value="@Model.Supplier" />
+        Min Quantity: <input type="number" name="MinQuantity" value="@Model.MinQuantity" />
+        Max Quantity: <input type="number" name="MaxQuantity" value="@Model.MaxQuantity" />
+        <input type="submit" value="Search" />
+    </p>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Items.First().Name)</th>
+            <th>@Html.DisplayNameFor(model => model.Items.First().Quantity)</th>
+            <th>@Html.DisplayNameFor(model => model.Items.First().Price)</th>
+            <th>@Html.DisplayNameFor(model => model.Items.First().UniqueCode)</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model?.Items != null && Model.Items.Any())
+        {
+            @foreach (var item in Model.Items)
+            {
+                <tr data-id="@item.Id">
+                    <td>
+                        <input type="text" name="Name" value="@item.Name" class="form-control" />
+                    </td>
+                    <td>
+                        <input type="number" name="Quantity" value="@item.Quantity" class="form-control" />
+                    </td>
+                    <td>
+                        <input type="number" name="Price" value="@item.Price" class="form-control" />
+                    </td>
+                    <td>
+                        <input type="text" name="UniqueCode" value="@item.UniqueCode" class="form-control" />
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-primary" onclick="saveEdit(@item.Id)">Edit</button>
+                        <button type="button" class="btn btn-secondary" onclick="cancelEdit(@item.Id)">Cancel</button>
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <p>No items available.</p>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        function saveEdit(id) {
+            var row = document.querySelector(`tr[data-id='${id}']`);
+            var item = {
+                "Id": id,
+                "Name" : row.querySelector("input[name='Name']").value,
+                "Quantity" : row.querySelector("input[name='Quantity']").value,
+                "Price" : row.querySelector("input[name='Price']").value,
+                "UniqueCode" : row.querySelector("input[name='UniqueCode']").value
+            };
+
+            // var data = {
+            //     "name": "John",
+            //     "age": 30,
+            //     "city": "New York"
+            // };
+
+            console.log(item);
+
+            // $.ajax({
+            //     contentType: 'application/json',
+            //     data: {
+            //         stringify.JSON(item)
+            //     },
+            //     dataType: 'json',
+            //     success: function (data) {
+            //         console.log("device control succeeded");
+            //     },
+            //     error: function () {
+            //         console.log("Device control failed");
+            //     },
+            //     processData: false,
+            //     type: 'POST',
+            //     url: '/Warehouse/EditItem'
+            // });
+
+            //JSON.stringify(data)
+            $.ajax({
+                url: "/Warehouse/EditItem?id=" + id,
+                type: "POST",
+                data: JSON.stringify(item),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    console.log(response);
+                },
+                error: function (xhr, status, error) {
+                    console.log(xhr.responseText);
+                }
+            });
+
+
+            // $.post('/Warehouse/EditItem', {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json'
+            //     },
+            //     body: item
+            // })
+            //     .then(response => {
+            //         if (response.ok) {
+            //             alert('Item updated successfully');
+            //         } else {
+            //             alert('Error updating item');
+            //         }
+            //     });
+        }
+
+        function cancelEdit(id) {
+            alert("Cancelled id: " + id);
+        }
+    </script>
+}
