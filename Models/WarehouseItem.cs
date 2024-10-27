@@ -43,9 +43,17 @@ public class WarehouseItem
     [DefaultValue(typeof(DateTime), "0001-01-01")]
     public DateTime UpdDate { get; set; }
 
+    [Required]
     [Column("suppliers_id", Order = 8, TypeName = "int")]
     public int SuppliersId { get; set; }
 
     public Suppliers Suppliers { get; set; } = new();
+}
+
+public enum Statuses
+{
+    Active = 0,
+    Disabled = 1,
+    Deleted = 2
 }
 

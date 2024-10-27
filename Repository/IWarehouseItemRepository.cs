@@ -10,6 +10,8 @@ public interface IWarehouseItemRepository
     Task<List<WarehouseItem>> GetItemsAsync(int supplierId, int minQuantity, int maxQuantity, CancellationToken token);
     Task<List<WarehouseItem>> GetItemsAsync(WarehouseItem item, CancellationToken token);
     Task<WarehouseItem?> GetSingleItemAsync(int itemId, CancellationToken token);
+    Task<List<Suppliers>> GetSuppliersAsync(CancellationToken token);
+    //Task<List<Suppliers>> GetSuppliersByItemAsync(int itemId,CancellationToken token);
     Task AddItemAsync(WarehouseItem item, CancellationToken token);
     Task UpdateItemAsync(WarehouseItem item, CancellationToken token);
     Task DeleteItemAsync(int id, CancellationToken token);

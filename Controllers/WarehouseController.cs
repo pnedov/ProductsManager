@@ -1,32 +1,46 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using FluentValidation;
+using FluentValidation.Results;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using ProductsManager.Controllers;
 using ProductsManager.Models;
 using ProductsManager.Repository;
 
-public class WarehouseController : Controller // Inherit from Controller
+
+public class WarehouseController : Controller
 {
     private ILogger<InitializeDatabaseController> _logger;
     private readonly WarehouseDbContext _context;
     private readonly IWarehouseItemRepository _repo;
+    private readonly IValidator<GetWarehouseItemRequest> _validator;
+    private readonly IMapper _mapper;
 
-    public WarehouseController(WarehouseDbContext context, IWarehouseItemRepository repo, ILogger<InitializeDatabaseController> logger)
+    public WarehouseController(IMapper mapper, IValidator<GetWarehouseItemRequest> validator,WarehouseDbContext context, IWarehouseItemRepository repo, ILogger<InitializeDatabaseController> logger)
     {
         _context = context;
         _repo = repo;
         _logger = logger;
+        _validator = validator;
+        _mapper = mapper;   
     }
 
     public async Task<IActionResult> Index(CancellationToken token)
     {
+        WarehouseViewModel model = new();
         var result = await _repo.GetItemsAsync(token);
+        model.Items = result;
+        model.Statuses = Enum.GetValues<Statuses>()
+            .Select(e => new SelectListItem
+            {
+                Value = ((int)e).ToString(),
+                Text = e.ToString()
+            });
 
-        WarehouseViewModel viewModel = new();
-        viewModel.Items = result;
-
-        return View(viewModel); // View method is now available
-
+        model.Suppliers = await _repo.GetSuppliersAsync(token);
+        
+        return View(model);
     }
 
     // GET: Warehouse/Create
@@ -38,20 +52,29 @@ public class WarehouseController : Controller // Inherit from Controller
     // POST: Warehouse/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,Name,Quantity,Price,Supplier,UniqueCode,Status,SuppliersId")] WarehouseItem item, CancellationToken token)
+    public async Task<IActionResult> Create([FromForm] GetWarehouseItemRequest item, CancellationToken token)
     {
-        if (ModelState.IsValid)
-        {
-            await _repo.AddItemAsync(item, token);
+        ValidationResult result = await _validator.ValidateAsync(item, token);
 
-            return RedirectToAction(nameof(Index));
+        if (!result.IsValid)
+        {
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
+            }
+            return BadRequest(ModelState);
         }
 
-        return Ok(item);
+        var model = _mapper.Map<WarehouseItem>(item);
+        await  _repo.AddItemAsync(model, token);
+
+
+       // return await Index(token);
+        return RedirectToAction("Index");
     }
 
     // GET: Warehouse/Edit/5
-    [HttpGet]
+    [HttpPost]
     public async Task<IActionResult> Edit(int id, [FromBody] WarehouseItem item, CancellationToken token)
     {
         var oldItem = await _repo.GetSingleItemAsync(item.Id, token);
@@ -70,32 +93,32 @@ public class WarehouseController : Controller // Inherit from Controller
         return Ok(item);
     }
 
-    // POST: Warehouse/Edit/5
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> EditItem(int id, [Bind("Id,Name,Quantity,Price,Supplier,UniqueCode,Status,SuppliersId")] WarehouseItem item, CancellationToken token)
-    {
-        if (id != item.Id)
-        {
-            return NotFound();
-        }
+    //// POST: Warehouse/Edit/5
+    //[HttpPost]
+    //[ValidateAntiForgeryToken]
+    //public async Task<IActionResult> EditItem(int id, [Bind("Id,Name,Quantity,Price,Supplier,UniqueCode,Status,SuppliersId")] WarehouseItem item, CancellationToken token)
+    //{
+    //    if (id != item.Id)
+    //    {
+    //        return NotFound();
+    //    }
 
-        if (ModelState.IsValid)
-        {
-            try
-            {
-                await _repo.UpdateItemAsync(item, token);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while updating item");
+    //    if (ModelState.IsValid)
+    //    {
+    //        try
+    //        {
+    //            await _repo.UpdateItemAsync(item, token);
+    //        }
+    //        catch (Exception ex)
+    //        {
+    //            _logger.LogError(ex, "An error occurred while updating item");
 
-                return RedirectToAction(nameof(Index));
-            }
-        }
+    //            return RedirectToAction(nameof(Index));
+    //        }
+    //    }
 
-        return Ok(item);
-    }
+    //    return Ok(item);
+    //}
 
     // GET: Warehouse/Delete/5
     [HttpGet]

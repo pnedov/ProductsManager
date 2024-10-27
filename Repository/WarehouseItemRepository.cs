@@ -45,6 +45,12 @@ public class WarehouseItemRepository : IWarehouseItemRepository
 
     public async Task AddItemAsync(WarehouseItem item, CancellationToken token)
     {
+        var supplier = await _context.Suppliers.AsNoTracking().FirstOrDefaultAsync(s => s.Id == item.SuppliersId, token);
+        if (supplier == null)
+        {
+            throw new InvalidOperationException($"Supplier with ID {item.SuppliersId} does not exist.");
+        }
+        _context.Entry(item).State = EntityState.Unchanged;
         _context.WarehouseItems.Add(item);
         await _context.SaveChangesAsync(token);
     }
@@ -61,5 +67,18 @@ public class WarehouseItemRepository : IWarehouseItemRepository
         _context.WarehouseItems.Remove(item);
         await _context.SaveChangesAsync(token);
     }
+
+    public async Task<List<Suppliers>> GetSuppliersAsync(CancellationToken token)
+    {
+        return await _context.Suppliers.ToListAsync(token);
+    }
+
+    //public async Task<List<Suppliers>> GetSupplierByItemAsync(int id, CancellationToken token)
+    //{
+    //    return await (from item in _context.WarehouseItems
+    //                  join supplier in _context.Suppliers on item.SuppliersId equals supplier.Id
+    //                  where item.Id == id
+    //                  select supplier).FirstOrDefaultAsync(token);
+    //}
 }
 

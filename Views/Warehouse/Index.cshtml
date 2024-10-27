@@ -2,6 +2,90 @@
 
 <h1>Warehouse Items</h1>
 
+<button id="addNewButton" class="btn btn-primary">Add New</button>
+
+<div id="addNewForm" style="display:none;">
+	<h4>Add New Warehouse Item</h4>
+    <hr />
+    <form asp-action="Create" method="post">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="col-form-label col-md-4">Product Name</label>
+                    <input type="text" id="Name" name="Name" value="" class="form-control">
+                    <span asp-validation-for="@Model.NewItem.Name" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="col-form-label col-md-4">Unique Code</label>
+                    <input type="text" id="UniqueCode" name="UniqueCode" value="" class="form-control">
+                    <span asp-validation-for="@Model.NewItem.UniqueCode" class="text-danger"></span>
+
+       @*              <label asp-for="@UniqueCode" class="control-label"></label>
+                    <input asp-for="@UniqueCode" class="form-control" />
+                    <span asp-validation-for="@UniqueCode" class="text-danger"></span> *@
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="col-form-label col-md-2">Quantity</label>
+                    <input type="number" id="Quantity" name="Quantity" value="" class="form-control">
+                    <span asp-validation-for="@Model.NewItem.Quantity" class="text-danger"></span>
+
+@*                     <label asp-for="NewItem.Quantity" class="control-label"></label>
+                    <input asp-for="NewItem.Quantity" class="form-control" />
+                    <span asp-validation-for="NewItem.Quantity" class="text-danger"></span> *@
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="col-form-label col-md-2">Price</label>
+                    <input type="number" id="Price" name="Price" value="" class="form-control">
+                    <span asp-validation-for="@Model.NewItem.Price" class="text-danger"></span>
+@* 
+                    <label asp-for="NewItem.Price" class="control-label"></label>
+                    <input asp-for="NewItem.Price" class="form-control" />
+                    <span asp-validation-for="NewItem.Price" class="text-danger"></span> *@
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="col-form-label col-md-2">Suppliers</label>
+                    <select id="SuppliersId" name="SuppliersId" class="form-control">
+                        <option value="">--- select ---</option>
+                        @foreach (var supplier in Model.Suppliers)
+                        {
+                            <option value="@supplier.Id">@supplier.Name</option>
+                        }
+                    </select>
+                    <span asp-validation-for="@Model.NewItem.SuppliersId" class="text-danger"></span>
+                </div>
+                 @*    <label asp-for="NewItem.SuppliersId" class="control-label"></label>
+                    <input asp-for="NewItem.SuppliersId" class="form-control" />
+                    <span asp-validation-for="NewItem.SuppliersId" class="text-danger"></span> *@
+   
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="col-form-label col-md-2">Status</label>
+                    @Html.DropDownListFor(m => m.NewItem.Status, Model.Statuses, "--- select ---", new { @class = "form-control"})
+                    <span asp-validation-for="@Model.NewItem.Status" class="text-danger"></span>
+
+                   @*  <label asp-for="NewItem.Status" class="control-label"></label>
+                    @Html.DropDownListFor(m => m.NewItem.Status, Model.Statuses, "Select Status", new { @class = "form-control" })
+                    <span asp-validation-for="NewItem.Status" class="text-danger"></span> *@
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-primary" />
+        </div>
+    </form>
+    </div>
+
 <form asp-action="Index" method="get">
     <p>
         Name: <input type="text" name="SearchString" value="@Model.SearchString" />
@@ -57,6 +141,7 @@
 @section Scripts {
     <script>
         function saveEdit(id) {
+            console.log(id);
             var row = document.querySelector(`tr[data-id='${id}']`);
             var item = {
                 "Id": id,
@@ -72,28 +157,10 @@
             //     "city": "New York"
             // };
 
-            console.log(item);
+            //console.log(item);
 
-            // $.ajax({
-            //     contentType: 'application/json',
-            //     data: {
-            //         stringify.JSON(item)
-            //     },
-            //     dataType: 'json',
-            //     success: function (data) {
-            //         console.log("device control succeeded");
-            //     },
-            //     error: function () {
-            //         console.log("Device control failed");
-            //     },
-            //     processData: false,
-            //     type: 'POST',
-            //     url: '/Warehouse/EditItem'
-            // });
-
-            //JSON.stringify(data)
             $.ajax({
-                url: "/Warehouse/EditItem?id=" + id,
+                url: "/Warehouse/Edit",
                 type: "POST",
                 data: JSON.stringify(item),
                 contentType: "application/json; charset=utf-8",
@@ -105,26 +172,15 @@
                     console.log(xhr.responseText);
                 }
             });
-
-
-            // $.post('/Warehouse/EditItem', {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json'
-            //     },
-            //     body: item
-            // })
-            //     .then(response => {
-            //         if (response.ok) {
-            //             alert('Item updated successfully');
-            //         } else {
-            //             alert('Error updating item');
-            //         }
-            //     });
         }
 
         function cancelEdit(id) {
             alert("Cancelled id: " + id);
         }
+
+        $("#addNewButton").click(function () {
+			$("#addNewForm").toggle();
+		});
+
     </script>
 }
