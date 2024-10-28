@@ -1,6 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.Options;
 
 namespace ProductsManager.Models;
 
@@ -32,7 +33,6 @@ public class WarehouseDbContext : DbContext
 
         base.OnModelCreating(modelBuilder);
     }
-
 
     public DbSet<WarehouseItem> WarehouseItems { get; set; }
     public DbSet<Suppliers> Suppliers { get; set; }

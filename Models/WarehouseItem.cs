@@ -15,16 +15,16 @@ public class WarehouseItem
     [Key]
     public int Id { get; set; }
 
-    [Required]
+    [Required(ErrorMessage = "Name is required.")]
     [Column("iname", Order = 2, TypeName = "nvarchar(64)")]
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     [Required]
     [Column("unique_code", Order = 3, TypeName = "nvarchar(64)")]
-    public string UniqueCode { get; set; }
+    public string UniqueCode { get; set; } = string.Empty;
 
     [Required]
-    [Column("quantity", Order = 3, TypeName = "int")]
+    [Column("quantity", Order = 4, TypeName = "int")]
     public int Quantity { get; set; }
 
     [Required]

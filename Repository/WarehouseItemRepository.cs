@@ -1,15 +1,18 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProductsManager.Models;
+using AutoMapper;
 
 namespace ProductsManager.Repository;
 
 public class WarehouseItemRepository : IWarehouseItemRepository
 {
     private readonly WarehouseDbContext _context;
+    private readonly IMapper _mapper;
 
-    public WarehouseItemRepository(WarehouseDbContext context)
+    public WarehouseItemRepository(IMapper mapper, WarehouseDbContext context)
     {
         _context = context;
+        _mapper = mapper;
     }
 
     public async Task<List<WarehouseItem>> GetItemsAsync(CancellationToken token)
@@ -39,31 +42,44 @@ public class WarehouseItemRepository : IWarehouseItemRepository
     }
 
     public async Task<WarehouseItem?> GetSingleItemAsync(int id, CancellationToken token)
-    {
+    { 
         return await _context.WarehouseItems.FirstOrDefaultAsync(x => x.Id == id, token);
     }
 
-    public async Task AddItemAsync(WarehouseItem item, CancellationToken token)
+    public async Task AddItemAsync(GetWarehouseItemRequest item, CancellationToken token)
     {
         var supplier = await _context.Suppliers.AsNoTracking().FirstOrDefaultAsync(s => s.Id == item.SuppliersId, token);
         if (supplier == null)
         {
-            throw new InvalidOperationException($"Supplier with ID {item.SuppliersId} does not exist.");
+            throw new InvalidOperationException(string.Format(GlobalMessages.SupplierNotFound, item.SuppliersId));
         }
-        _context.Entry(item).State = EntityState.Unchanged;
-        _context.WarehouseItems.Add(item);
+
+        var newItem = _mapper.Map<WarehouseItem>(item);
+        //_context.Entry(item).State = EntityState.Unchanged;
+        _context.Entry(newItem).State = EntityState.Modified;
+        _context.WarehouseItems.Add(newItem);
+        
         await _context.SaveChangesAsync(token);
     }
 
-    public async Task UpdateItemAsync(WarehouseItem item, CancellationToken token)
+    public async Task UpdateItemAsync(GetWarehouseItemRequest item, WarehouseItem oldItem, CancellationToken token)
     {
-        _context.WarehouseItems.Update(item);
+        var updItem = _mapper.Map<GetWarehouseItemRequest,WarehouseItem>(item);
+        updItem.UpdDate = DateTime.Now;
+        _context.Entry(oldItem).State = EntityState.Detached; // Detach the old entity
+        _context.Entry(updItem).State = EntityState.Modified; // Attach and mark the new entity as modified
+        _context.WarehouseItems.Update(updItem);
+
         await _context.SaveChangesAsync(token);
     }
 
     public async Task DeleteItemAsync(int id, CancellationToken token)
     {
-        var item = await this.GetSingleItemAsync(id, token);
+       var item = await this.GetSingleItemAsync(id, token);
+        if (item == null)
+        {
+            throw new InvalidOperationException($"WarehouseItem with id {id} not found.");
+        }
         _context.WarehouseItems.Remove(item);
         await _context.SaveChangesAsync(token);
     }
@@ -72,13 +88,16 @@ public class WarehouseItemRepository : IWarehouseItemRepository
     {
         return await _context.Suppliers.ToListAsync(token);
     }
+    public void RefreshDbContext()
+    {
+        var changedEntries = _context.ChangeTracker.Entries()
+            .Where(e => e.State != EntityState.Unchanged)
+            .ToList();
 
-    //public async Task<List<Suppliers>> GetSupplierByItemAsync(int id, CancellationToken token)
-    //{
-    //    return await (from item in _context.WarehouseItems
-    //                  join supplier in _context.Suppliers on item.SuppliersId equals supplier.Id
-    //                  where item.Id == id
-    //                  select supplier).FirstOrDefaultAsync(token);
-    //}
+        foreach (var entry in changedEntries)
+        {
+            entry.State = EntityState.Detached;
+        }
+    }
 }
 

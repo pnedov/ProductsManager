@@ -17,7 +17,7 @@ public class Suppliers
     public int Id { get; set; }
 
     [Column("iname", Order = 2, TypeName = "nvarchar(64)")]
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     [Column("add_date", Order = 3, TypeName = "datetime2")]
     [DefaultValue(typeof(DateTime), "0001-01-01")]
@@ -32,6 +32,6 @@ public class Suppliers
     public int Status { get; set; }
 
     [ForeignKey("SuppliersId")]
-    public ICollection<WarehouseItem> WarehouseItem { get; set; }
+    public ICollection<WarehouseItem> WarehouseItem { get; set; } 
 }
 

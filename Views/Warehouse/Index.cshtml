@@ -1,5 +1,12 @@
 ﻿@model WarehouseViewModel
 
+@{
+    string success_msg = (TempData["Success"] != null) ? TempData["Success"].ToString() : "";
+    string failure_msg = (TempData["Error"] != null) ? TempData["Error"].ToString() : "";
+    string display_succes = !string.IsNullOrEmpty(success_msg) ? "block" : "none";
+    string display_error =  !string.IsNullOrEmpty(failure_msg) ? "block" : "none";
+}
+
 <h1>Warehouse Items</h1>
 
 <button id="addNewButton" class="btn btn-primary">Add New</button>
@@ -7,35 +14,27 @@
 <div id="addNewForm" style="display:none;">
 	<h4>Add New Warehouse Item</h4>
     <hr />
-    <form asp-action="Create" method="post">
+    <form asp-action="Create" method="post" id="addNewForm" name="addNewForm">
         <div class="row">
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="col-form-label col-md-4">Product Name</label>
                     <input type="text" id="Name" name="Name" value="" class="form-control">
-                    <span asp-validation-for="@Model.NewItem.Name" class="text-danger"></span>
+                    <span asp-validation-for="@Model.Item.Name" class="text-danger"></span>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="col-form-label col-md-4">Unique Code</label>
                     <input type="text" id="UniqueCode" name="UniqueCode" value="" class="form-control">
-                    <span asp-validation-for="@Model.NewItem.UniqueCode" class="text-danger"></span>
-
-       @*              <label asp-for="@UniqueCode" class="control-label"></label>
-                    <input asp-for="@UniqueCode" class="form-control" />
-                    <span asp-validation-for="@UniqueCode" class="text-danger"></span> *@
+                    <span asp-validation-for="@Model.Item.UniqueCode" class="text-danger"></span>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="col-form-label col-md-2">Quantity</label>
                     <input type="number" id="Quantity" name="Quantity" value="" class="form-control">
-                    <span asp-validation-for="@Model.NewItem.Quantity" class="text-danger"></span>
-
-@*                     <label asp-for="NewItem.Quantity" class="control-label"></label>
-                    <input asp-for="NewItem.Quantity" class="form-control" />
-                    <span asp-validation-for="NewItem.Quantity" class="text-danger"></span> *@
+                    <span asp-validation-for="@Model.Item.Quantity" class="text-danger"></span>
                 </div>
             </div>
         </div>
@@ -44,11 +43,7 @@
                 <div class="form-group">
                     <label class="col-form-label col-md-2">Price</label>
                     <input type="number" id="Price" name="Price" value="" class="form-control">
-                    <span asp-validation-for="@Model.NewItem.Price" class="text-danger"></span>
-@* 
-                    <label asp-for="NewItem.Price" class="control-label"></label>
-                    <input asp-for="NewItem.Price" class="form-control" />
-                    <span asp-validation-for="NewItem.Price" class="text-danger"></span> *@
+                    <span asp-validation-for="@Model.Item.Price" class="text-danger"></span>
                 </div>
             </div>
             <div class="col-md-4">
@@ -61,48 +56,60 @@
                             <option value="@supplier.Id">@supplier.Name</option>
                         }
                     </select>
-                    <span asp-validation-for="@Model.NewItem.SuppliersId" class="text-danger"></span>
+                    <span asp-validation-for="@Model.Item.SuppliersId" class="text-danger"></span>
                 </div>
-                 @*    <label asp-for="NewItem.SuppliersId" class="control-label"></label>
-                    <input asp-for="NewItem.SuppliersId" class="form-control" />
-                    <span asp-validation-for="NewItem.SuppliersId" class="text-danger"></span> *@
-   
             </div>
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="col-form-label col-md-2">Status</label>
-                    @Html.DropDownListFor(m => m.NewItem.Status, Model.Statuses, "--- select ---", new { @class = "form-control"})
-                    <span asp-validation-for="@Model.NewItem.Status" class="text-danger"></span>
-
-                   @*  <label asp-for="NewItem.Status" class="control-label"></label>
-                    @Html.DropDownListFor(m => m.NewItem.Status, Model.Statuses, "Select Status", new { @class = "form-control" })
-                    <span asp-validation-for="NewItem.Status" class="text-danger"></span> *@
+                    <select id="Status" name="Status" class="form-control">
+                        <option value="">--- select ---</option>
+                        @foreach (var status in Model.Statuses)
+                        {
+                            <option value="@status.Value">@status.Text</option>
+                        }
+                    </select>
+                    <span asp-validation-for="@Model.Statuses" class="text-danger"></span>
                 </div>
             </div>
         </div>
         <div class="form-group">
-            <input type="submit" value="Create" class="btn btn-primary" />
+            <input type="submit" value="Create" id="btnCreate" class="btn btn-primary" />
         </div>
     </form>
-    </div>
-
+</div>
+<!-- Grid Items-->
 <form asp-action="Index" method="get">
-    <p>
+    <!--<p>
         Name: <input type="text" name="SearchString" value="@Model.SearchString" />
         Supplier: <input type="text" name="Supplier" value="@Model.Supplier" />
         Min Quantity: <input type="number" name="MinQuantity" value="@Model.MinQuantity" />
         Max Quantity: <input type="number" name="MaxQuantity" value="@Model.MaxQuantity" />
         <input type="submit" value="Search" />
     </p>
+    -->
 </form>
 
 <table class="table">
     <thead>
         <tr>
+            <td colspan="8"> 
+                 <div id="msg-success" style="display:@display_succes;">
+                     <div class="alert alert-success">@success_msg</div>
+                </div>
+                 <div id="msg-error" style="display:@display_error;">
+                     <div class="alert alert-danger">@failure_msg</div>
+                </div>
+            </td>
+        </tr>
+        <tr>
             <th>@Html.DisplayNameFor(model => model.Items.First().Name)</th>
             <th>@Html.DisplayNameFor(model => model.Items.First().Quantity)</th>
             <th>@Html.DisplayNameFor(model => model.Items.First().Price)</th>
             <th>@Html.DisplayNameFor(model => model.Items.First().UniqueCode)</th>
+            <th>@Html.DisplayNameFor(model => model.Items.First().Suppliers)</th>
+            <th>@Html.DisplayNameFor(model => model.Items.First().Status)</th>
+            <th></th>
             <th></th>
         </tr>
     </thead>
@@ -119,68 +126,148 @@
                         <input type="number" name="Quantity" value="@item.Quantity" class="form-control" />
                     </td>
                     <td>
-                        <input type="number" name="Price" value="@item.Price" class="form-control" />
+                        <input type="number" name="Price" value="@item.Price.ToString("0.000")" min="0.00" step="0.01" class="form-control" />
                     </td>
                     <td>
                         <input type="text" name="UniqueCode" value="@item.UniqueCode" class="form-control" />
                     </td>
                     <td>
-                        <button type="button" class="btn btn-primary" onclick="saveEdit(@item.Id)">Edit</button>
-                        <button type="button" class="btn btn-secondary" onclick="cancelEdit(@item.Id)">Cancel</button>
+                        <select id="SuppliersId" name="SuppliersId" class="form-control">
+                            <option value="">--- select ---</option>
+                            @foreach (var supplier in Model.Suppliers)
+                            {
+                                var selected_flag = supplier.Id == item.SuppliersId ? "selected" : "";
+                                if(!string.IsNullOrEmpty(selected_flag))
+                                {
+                                    <option value="@supplier.Id" selected="@selected_flag">@supplier.Name</option>
+                                }
+                                else
+                                {
+                                    <option value="@supplier.Id">@supplier.Name</option >
+                                }
+                            }
+                        </select>
+                    </td>
+                    <td>
+                        <select id="Status" name="Status" class="form-control">
+                            <option value="">--- select ---</option>
+                            @foreach (var status in Model.Statuses)
+                            {
+                                var selected_flag = int.Parse(status.Value) == item.Status ? "selected" : "";
+                                if (!string.IsNullOrEmpty(selected_flag))
+                                {
+
+                                    <option value="@status.Value" selected="@selected_flag">@status.Text</option>
+                                }
+                                else
+                                {
+                                    <option value="@status.Value">@status.Text</option>
+                                }
+                            }
+                        </select>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-primary" onclick="SaveEdit(@item.Id)">Edit</button>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-secondary" onclick="ReloadCancel(@item.Id)">Cancel</button>
                     </td>
                 </tr>
             }
         }
         else
-        {
-            <p>No items available.</p>
+        { 
+            <tr>
+                <td colspan="7">No items available.</td>
+            </tr>  
         }
     </tbody>
 </table>
 
 @section Scripts {
     <script>
-        function saveEdit(id) {
+        function SaveEdit(id) {
             console.log(id);
             var row = document.querySelector(`tr[data-id='${id}']`);
-            var item = {
+            var reqItem = {
                 "Id": id,
                 "Name" : row.querySelector("input[name='Name']").value,
                 "Quantity" : row.querySelector("input[name='Quantity']").value,
                 "Price" : row.querySelector("input[name='Price']").value,
-                "UniqueCode" : row.querySelector("input[name='UniqueCode']").value
+                "UniqueCode" : row.querySelector("input[name='UniqueCode']").value,
+                "SuppliersId": row.querySelector("select[name='SuppliersId']").value,
+                "Status": row.querySelector("select[name='Status']").value
             };
 
-            // var data = {
-            //     "name": "John",
-            //     "age": 30,
-            //     "city": "New York"
-            // };
-
-            //console.log(item);
-
             $.ajax({
-                url: "/Warehouse/Edit",
+                url: "/warehouse/edit",
                 type: "POST",
-                data: JSON.stringify(item),
+                data: JSON.stringify(reqItem),
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (response) {
-                    console.log(response);
+                    var div_success = $('body').find("#msg-success");
+                    div_success.show();
+                    div_success.children('div').text(response.message);
+                    var tr = $('table tr[data-id="' + id + '"]');
+                    tr.addClass("blink");
+                    setTimeout(() => {
+                         tr.removeClass("blink");
+                    }, 2000);
                 },
-                error: function (xhr, status, error) {
-                    console.log(xhr.responseText);
+                error: function(data) {
+                    var div_error = $('body').find("#msg-error");
+                    div_error.show();
+                    div_error.children('div').text(data.message);
+                    console.log(data.message);
                 }
             });
         }
 
-        function cancelEdit(id) {
-            alert("Cancelled id: " + id);
+        function ReloadCancel(id) {
+            var row = $('table tr[data-id="' + id + '"]');
+
+            $.ajax({
+                url: "/warehouse/get-item?id=" + id,
+                type: "GET",
+                success: function(data) {
+                   $(row.find("input[name='Name']")).val(data.name);
+                   $(row.find("input[name='Quantity']")).val(data.quantity);
+                   $(row.find("input[name='Price']")).val(data.price);
+                   $(row.find("input[name='UniqueCode']")).val(data.uniqueCode);
+                   $(row.find("select[name='SuppliersId']")).val(data.suppliersId).change();
+                   $(row.find("select[name='Status']")).val(data.status).change();
+                },
+                error: function(data) {
+                   var div_error = $('body').find("#msg-error");
+                   div_error.show();
+                   div_error.children('div').text(data.message);
+                   console.log(data.message);
+                }
+            });
         }
 
         $("#addNewButton").click(function () {
 			$("#addNewForm").toggle();
 		});
 
+        $(document).on('click','body',function(){
+            $("#msg-success,#msg-error").hide();
+        });
+
+        ///Add new Item
+
+        // $(function () {
+        //     $("#btnCreate").click(function () {
+        //         var form = $("#addNewForm");
+        //         var field_name = form.find("#Name").val();
+        //         console.log(field_name);
+        //         // var val = $("#ddlServiceID").val();
+        //         // $.post("/Home/GetGroups", { serviceID: val }, function (data, textStatus) {
+        //         //     alert(data);
+        //         // });
+        //     });
+        // })
+
     </script>
-}
+} 
