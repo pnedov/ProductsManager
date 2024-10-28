@@ -111,22 +111,17 @@ public class WarehouseController : Controller
         }
     }
 
-    [HttpGet("delete")]
-    public async Task<IActionResult> Delete(int? id)
+    [HttpPost("delete")]
+    public async Task<IActionResult> Delete([Bind("cbitems")] string cbitems, CancellationToken token)
     {
-        if (id == null)
+        if (string.IsNullOrEmpty(cbitems))
         {
             return NotFound();
         }
+        await _repo.DeleteMultiItemsAsync(cbitems, token);
+        TempData["Success"] = GlobalMessages.ItemDeletionSuccess;
 
-        var warehouseItem = await _context.WarehouseItems
-            .FirstOrDefaultAsync(m => m.Id == id);
-        if (warehouseItem == null)
-        {
-            return NotFound();
-        }
-
-        return Ok(warehouseItem);
+        return RedirectToAction("Index");
     }
 
     // POST: Warehouse/Delete/5

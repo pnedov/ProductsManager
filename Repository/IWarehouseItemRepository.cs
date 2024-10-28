@@ -14,5 +14,6 @@ public interface IWarehouseItemRepository
     Task AddItemAsync(GetWarehouseItemRequest item, CancellationToken token);
     Task UpdateItemAsync(GetWarehouseItemRequest item, WarehouseItem oldItem, CancellationToken token);
     Task DeleteItemAsync(int id, CancellationToken token);
+    Task DeleteMultiItemsAsync(string item, CancellationToken token);
 }
 

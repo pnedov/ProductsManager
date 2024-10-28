@@ -10,5 +10,6 @@ public static class GlobalMessages
     public const string ItemUpdateSuccess = "Item was updated successfully";
     public const string ItemUpdateError = "An error occurred while updating item";
     public const string ItemCancellationError = "An error occurred while cancel item";
+    public const string ItemDeletionSuccess = "Item was deleted successfully";
 }
 

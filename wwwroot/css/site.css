@@ -22,15 +22,28 @@ body {
 }
 
 .blink {
-    -webkit-animation: 1s blink ease infinite;
-    -moz-animation: 1s blink ease infinite;
-    -ms-animation: 1s blink ease infinite;
-    -o-animation: 1s blink ease infinite;
-    animation: 1s blink ease infinite;
+  -webkit-animation: 1s blink ease infinite;
+  -moz-animation: 1s blink ease infinite;
+  -ms-animation: 1s blink ease infinite;
+  -o-animation: 1s blink ease infinite;
+  animation: 1s blink ease infinite;
 }
 
 @keyframes blink {
-    50% {
-        opacity: 0.4;
-    }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+#list-btn-multi {
+  padding: var(--fw-spacer05) var(--fw-spacer05) 0 0;
+  display: inline-block;
+  bottom: 0;
+  left: var(--fw-spacer);
+}
+
+#list-btn-multi.position-sticky {
+  background-color: rgba(var(--bs-tertiary-bg-rgb),0.5);
+  left: var(--fw-sidebar-width);
+  padding-bottom: var(--fw-spacer);
 }

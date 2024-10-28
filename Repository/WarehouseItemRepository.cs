@@ -55,7 +55,6 @@ public class WarehouseItemRepository : IWarehouseItemRepository
         }
 
         var newItem = _mapper.Map<WarehouseItem>(item);
-        //_context.Entry(item).State = EntityState.Unchanged;
         _context.Entry(newItem).State = EntityState.Modified;
         _context.WarehouseItems.Add(newItem);
         
@@ -81,6 +80,20 @@ public class WarehouseItemRepository : IWarehouseItemRepository
             throw new InvalidOperationException($"WarehouseItem with id {id} not found.");
         }
         _context.WarehouseItems.Remove(item);
+        await _context.SaveChangesAsync(token);
+    }
+
+    public async Task DeleteMultiItemsAsync(string ids, CancellationToken token)
+    {
+        var idList = ids.Split(',').Select(int.Parse).ToList();
+        var items = await _context.WarehouseItems.Where(x => idList.Contains(x.Id)).ToListAsync(token);
+        if (items.Count == 0)
+        {
+            throw new InvalidOperationException("No items found for deletion.");
+        }
+
+        //_context.Entry(items).State = EntityState.Deleted;
+        _context.WarehouseItems.RemoveRange(items);
         await _context.SaveChangesAsync(token);
     }
 

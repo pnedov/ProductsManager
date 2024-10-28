@@ -9,7 +9,16 @@
 
 <h1>Warehouse Items</h1>
 
-<button id="addNewButton" class="btn btn-primary">Add New</button>
+<div class="container p-3">
+    <div class="row">
+        <div class="col-md-6 d-flex justify-content-start">
+            <button id="addNewButton" class="btn btn-primary">Add New</button>
+        </div>
+        <div class="col-md-6 d-flex justify-content-end">
+            <button id="refresh" class="btn btn-success">Refresh</button>
+        </div>
+    </div>
+</div>
 
 <div id="addNewForm" style="display:none;">
 	<h4>Add New Warehouse Item</h4>
@@ -19,21 +28,21 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="col-form-label col-md-4">Product Name</label>
-                    <input type="text" id="Name" name="Name" value="" class="form-control">
+                    <input type="text" id="Name" name="Name" value="" placeholder="Product Name" class="form-control">
                     <span asp-validation-for="@Model.Item.Name" class="text-danger"></span>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="col-form-label col-md-4">Unique Code</label>
-                    <input type="text" id="UniqueCode" name="UniqueCode" value="" class="form-control">
+                    <input type="text" id="UniqueCode" name="UniqueCode" value="" placeholder="XXX231Z" class="form-control">
                     <span asp-validation-for="@Model.Item.UniqueCode" class="text-danger"></span>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="col-form-label col-md-2">Quantity</label>
-                    <input type="number" id="Quantity" name="Quantity" value="" class="form-control">
+                    <input type="number" id="Quantity" name="Quantity" value="" placeholder="1000" class="form-control">
                     <span asp-validation-for="@Model.Item.Quantity" class="text-danger"></span>
                 </div>
             </div>
@@ -42,7 +51,7 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="col-form-label col-md-2">Price</label>
-                    <input type="number" id="Price" name="Price" value="" class="form-control">
+                    <input type="number" id="Price" name="Price" value="" placeholder="0.00" class="form-control">
                     <span asp-validation-for="@Model.Item.Price" class="text-danger"></span>
                 </div>
             </div>
@@ -73,12 +82,18 @@
                 </div>
             </div>
         </div>
-        <div class="form-group">
-            <input type="submit" value="Create" id="btnCreate" class="btn btn-primary" />
+        <div class="row pt-2">
+            <div class="col-md-5"></div>
+            <div class="col-md-2">
+                <input type="submit" value="Create" id="btnCreate" class="btn btn-primary" />
+            </div>
+             <div class="col-md-5"></div>
         </div>
     </form>
 </div>
-<!-- Grid Items-->
+
+<!-- Search Fields-->
+
 <form asp-action="Index" method="get">
     <!--<p>
         Name: <input type="text" name="SearchString" value="@Model.SearchString" />
@@ -90,7 +105,9 @@
     -->
 </form>
 
-<table class="table">
+<!-- Grid Items-->
+
+<table class="table table-sm table-hover list">
     <thead>
         <tr>
             <td colspan="8"> 
@@ -103,6 +120,7 @@
             </td>
         </tr>
         <tr>
+            <th><input type="checkbox" name="all" value="1" class="on-list-chkall"></th>
             <th>@Html.DisplayNameFor(model => model.Items.First().Name)</th>
             <th>@Html.DisplayNameFor(model => model.Items.First().Quantity)</th>
             <th>@Html.DisplayNameFor(model => model.Items.First().Price)</th>
@@ -119,6 +137,9 @@
             @foreach (var item in Model.Items)
             {
                 <tr data-id="@item.Id">
+                    <td>
+                        <input class="multicb mt-3" type="checkbox" name="cb[@item.Id]" value="1" />
+                    </td>
                     <td>
                         <input type="text" name="Name" value="@item.Name" class="form-control" />
                     </td>
@@ -178,11 +199,18 @@
         else
         { 
             <tr>
-                <td colspan="7">No items available.</td>
+                <td colspan="8">No items available</td>
             </tr>  
         }
     </tbody>
-</table>
+    </table>
+    <form asp-action="Delete" method="post" name="form_delete" id="list-btn-multi">
+        <div id="" class="mb-3">
+          with <span class="badge bg-secondary rows-num"></span> checked rows:<br>
+          <input type="submit" name="delete" value="Delete" class="btn btn-danger on-delete-multi">
+        </div>
+        <input type="hidden" id="cbitems" name="cbitems" />
+    </form>
 
 @section Scripts {
     <script>
@@ -226,7 +254,6 @@
 
         function ReloadCancel(id) {
             var row = $('table tr[data-id="' + id + '"]');
-
             $.ajax({
                 url: "/warehouse/get-item?id=" + id,
                 type: "GET",
@@ -255,19 +282,66 @@
             $("#msg-success,#msg-error").hide();
         });
 
-        ///Add new Item
+        $("#refresh").click(function () {
+			window.location.reload();
+		});
 
-        // $(function () {
-        //     $("#btnCreate").click(function () {
-        //         var form = $("#addNewForm");
-        //         var field_name = form.find("#Name").val();
-        //         console.log(field_name);
-        //         // var val = $("#ddlServiceID").val();
-        //         // $.post("/Home/GetGroups", { serviceID: val }, function (data, textStatus) {
-        //         //     alert(data);
-        //         // });
-        //     });
-        // })
+        /////////// * Multi delete functionalities * /////////////
+     
+        //list check all/none handler
+        $(document).on('click', '.on-list-chkall', function (e){
+          var $cbs = $(".multicb", this.form).prop('checked', this.checked);
+          if (this.checked){
+            $cbs.closest("tr").addClass("selected");
+          }else{
+            $cbs.closest("tr").removeClass("selected");
+          }
+        });
+
+        $(document).on('click', '.on-delete-multi', function (e){
+          var el=this;
+          if (!el._is_confirmed){
+            e.preventDefault();
+            if (!$('.multicb:checked').length) return;//exit if no rows selected
+            if(confirm("Are you sure to delete multiple selected records?")){
+              el.closest("form").submit();
+            }else{
+                return false;
+            }
+          }
+        });
+
+        //make list multi buttons floating if at least one row checked
+        $(document).on('click', '.on-list-chkall, .multicb', function (e) {
+            var $this = $(this);
+            var $bm = $('#list-btn-multi');
+            var len = $('.multicb:checked').length;
+            if (len>0){
+                //float
+                $bm.addClass('position-sticky');
+                $bm.find('.rows-num').text(len);
+            }else{
+            //de-float
+                $bm.removeClass('position-sticky');
+                $bm.find('.rows-num').text('');
+            }
+            if ($this.is(".multicb")){
+                if (this.checked){
+                    $this.closest("tr").addClass("selected");
+                }else{
+                    $this.closest("tr").removeClass("selected");
+                }
+            }
+
+            //also fill item_id with comma-separated checked ids
+            var ids=[];
+            $('.multicb:checked').each(function (i,el){
+                var name = el.name.replace('cb[', '');
+                name = name.replace(']', '');
+                ids.push(name); //leave just id
+            });
+            if (ids.length) $('form[name="form_delete"]').find('input[name="cbitems"]').val(ids.join(','));
+        });
 
     </script>
 } 
