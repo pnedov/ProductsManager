@@ -17,7 +17,7 @@ public class WarehouseItem
 
     [Required(ErrorMessage = "Name is required.")]
     [Column("iname", Order = 2, TypeName = "nvarchar(64)")]
-    public string Name { get; set; } = string.Empty;
+    public string Name { get; set; }
 
     [Required]
     [Column("unique_code", Order = 3, TypeName = "nvarchar(64)")]

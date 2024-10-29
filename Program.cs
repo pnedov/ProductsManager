@@ -2,8 +2,6 @@ using ProductsManager.Models;
 using Microsoft.EntityFrameworkCore;
 using ProductsManager.Services;
 using ProductsManager.Repository;
-using FluentValidation;
-using ProductsManager.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +11,6 @@ var configuration = builder.Configuration;
 builder.Services.AddScoped<WarehouseDbContext>();
 builder.Services.AddScoped<IWarehouseItemRepository,WarehouseItemRepository>();
 builder.Services.AddScoped<ISystemService, SystemService>();
-builder.Services.AddTransient<IValidator<GetWarehouseItemRequest>, GetWarehouseItemRequestValidator>();
 builder.Services.AddAutoMapper(typeof(ModelsMapper).Assembly);
 
 var app = builder.Build();

@@ -1,6 +1,4 @@
-﻿using FluentValidation;
-using FluentValidation.Results;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProductsManager.Controllers;
@@ -14,14 +12,12 @@ public class WarehouseController : Controller
     private ILogger<InitializeDatabaseController> _logger;
     private readonly WarehouseDbContext _context;
     private readonly IWarehouseItemRepository _repo;
-    private readonly IValidator<GetWarehouseItemRequest> _validator;
 
-    public WarehouseController(IValidator<GetWarehouseItemRequest> validator, WarehouseDbContext context, IWarehouseItemRepository repo, ILogger<InitializeDatabaseController> logger)
+    public WarehouseController(WarehouseDbContext context, IWarehouseItemRepository repo, ILogger<InitializeDatabaseController> logger)
     {
         _context = context;
         _repo = repo;
-        _logger = logger;
-        _validator = validator;  
+        _logger = logger;  
     }
 
     [HttpGet("main")]
@@ -44,20 +40,8 @@ public class WarehouseController : Controller
     [HttpPost("create")]
     public async Task<IActionResult> Create([Bind("Name,Quantity,Price,SuppliersId,UniqueCode,Status")] GetWarehouseItemRequest item, CancellationToken token)
     {
-        ValidationResult result = await _validator.ValidateAsync(item, token);
-
         try
         {
-            if (!result.IsValid)
-            {
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(error.PropertyName, error.ErrorMessage);
-                }
-                //return BadRequest(ModelState);
-                return RedirectToAction("Index");
-            }
-
             await _repo.AddItemAsync(item, token);
             TempData["Success"] = GlobalMessages.ItemCreationSuccess;
 
@@ -124,19 +108,23 @@ public class WarehouseController : Controller
         return RedirectToAction("Index");
     }
 
-    // POST: Warehouse/Delete/5
-    [HttpPost, ActionName("Delete")]
-    [ValidateAntiForgeryToken]
-    public async Task<IActionResult> DeleteConfirmed(int id)
+    [HttpGet("search")]
+    public async Task<List<WarehouseItem>> SearchWarehouseItems(string searchParam, CancellationToken token)
     {
-        var item = await _context.WarehouseItems.FindAsync(id);
-        if (item == null)
+        if (string.IsNullOrEmpty(searchParam))
         {
-            return NotFound();
+            return await _context.WarehouseItems.ToListAsync(token);
         }
-        _context.WarehouseItems.Remove(item);
-        await _context.SaveChangesAsync();
 
-        return RedirectToAction(nameof(Index));
+        var query = _context.WarehouseItems.AsQueryable();
+
+        query = query.Where(item =>
+            item.Name.Contains(searchParam) ||
+            item.UniqueCode.Contains(searchParam) ||
+            item.Quantity.ToString().Contains(searchParam) ||
+            item.Price.ToString().Contains(searchParam) ||
+            item.Suppliers.Name.Contains(searchParam));
+
+        return await query.ToListAsync(token);
     }
 }

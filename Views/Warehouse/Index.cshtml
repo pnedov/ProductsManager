@@ -27,23 +27,24 @@
         <div class="row">
             <div class="col-md-4">
                 <div class="form-group">
-                    <label class="col-form-label col-md-4">Product Name</label>
-                    <input type="text" id="Name" name="Name" value="" placeholder="Product Name" class="form-control">
-                    <span asp-validation-for="@Model.Item.Name" class="text-danger"></span>
+                    <label class="col-form-label col-md-4 req">Product Name</label>
+                    <input type="text" id="Name" name="Name" value="@Model.Item.Name" placeholder="Product Name" class="form-control">
+                    @Html.ValidationMessageFor(m => m.Item.Name, "", new { @class = "text-danger" })
+                
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="col-form-label col-md-4">Unique Code</label>
-                    <input type="text" id="UniqueCode" name="UniqueCode" value="" placeholder="XXX231Z" class="form-control">
-                    <span asp-validation-for="@Model.Item.UniqueCode" class="text-danger"></span>
+                    <input type="text" id="UniqueCode" name="UniqueCode" value="@Model.Item.UniqueCode" placeholder="XXX231Z" class="form-control">
+                     @Html.ValidationMessageFor(m => m.Item.UniqueCode, "", new { @class = "text-danger" })
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="col-form-label col-md-2">Quantity</label>
-                    <input type="number" id="Quantity" name="Quantity" value="" placeholder="1000" class="form-control">
-                    <span asp-validation-for="@Model.Item.Quantity" class="text-danger"></span>
+                    <input type="number" id="Quantity" name="Quantity" value="@Model.Item.Quantity" placeholder="1000" class="form-control">
+                    @Html.ValidationMessageFor(m => m.Item.Quantity, "", new { @class = "text-danger" })
                 </div>
             </div>
         </div>
@@ -51,8 +52,8 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="col-form-label col-md-2">Price</label>
-                    <input type="number" id="Price" name="Price" value="" placeholder="0.00" class="form-control">
-                    <span asp-validation-for="@Model.Item.Price" class="text-danger"></span>
+                    <input type="number" id="Price" name="Price" value="@Model.Item.Price" min="0.00" step="0.01" placeholder="0.00" class="form-control">
+                    @Html.ValidationMessageFor(m => m.Item.Price, "", new { @class = "text-danger" })
                 </div>
             </div>
             <div class="col-md-4">
@@ -65,7 +66,7 @@
                             <option value="@supplier.Id">@supplier.Name</option>
                         }
                     </select>
-                    <span asp-validation-for="@Model.Item.SuppliersId" class="text-danger"></span>
+                    @Html.ValidationMessageFor(m => m.Item.SuppliersId, "", new { @class = "text-danger" })
                 </div>
             </div>
             <div class="col-md-4">
@@ -78,7 +79,6 @@
                             <option value="@status.Value">@status.Text</option>
                         }
                     </select>
-                    <span asp-validation-for="@Model.Statuses" class="text-danger"></span>
                 </div>
             </div>
         </div>
@@ -212,136 +212,136 @@
         <input type="hidden" id="cbitems" name="cbitems" />
     </form>
 
-@section Scripts {
-    <script>
-        function SaveEdit(id) {
-            console.log(id);
-            var row = document.querySelector(`tr[data-id='${id}']`);
-            var reqItem = {
-                "Id": id,
-                "Name" : row.querySelector("input[name='Name']").value,
-                "Quantity" : row.querySelector("input[name='Quantity']").value,
-                "Price" : row.querySelector("input[name='Price']").value,
-                "UniqueCode" : row.querySelector("input[name='UniqueCode']").value,
-                "SuppliersId": row.querySelector("select[name='SuppliersId']").value,
-                "Status": row.querySelector("select[name='Status']").value
-            };
+@* @section Scripts {*@
+    <script> 
+  //       function SaveEdit(id) {
+  //           console.log(id);
+  //           var row = document.querySelector(`tr[data-id='${id}']`);
+  //           var reqItem = {
+  //               "Id": id,
+  //               "Name" : row.querySelector("input[name='Name']").value,
+  //               "Quantity" : row.querySelector("input[name='Quantity']").value,
+  //               "Price" : row.querySelector("input[name='Price']").value,
+  //               "UniqueCode" : row.querySelector("input[name='UniqueCode']").value,
+  //               "SuppliersId": row.querySelector("select[name='SuppliersId']").value,
+  //               "Status": row.querySelector("select[name='Status']").value
+  //           };
 
-            $.ajax({
-                url: "/warehouse/edit",
-                type: "POST",
-                data: JSON.stringify(reqItem),
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function (response) {
-                    var div_success = $('body').find("#msg-success");
-                    div_success.show();
-                    div_success.children('div').text(response.message);
-                    var tr = $('table tr[data-id="' + id + '"]');
-                    tr.addClass("blink");
-                    setTimeout(() => {
-                         tr.removeClass("blink");
-                    }, 2000);
-                },
-                error: function(data) {
-                    var div_error = $('body').find("#msg-error");
-                    div_error.show();
-                    div_error.children('div').text(data.message);
-                    console.log(data.message);
-                }
-            });
-        }
+  //           $.ajax({
+  //               url: "/warehouse/edit",
+  //               type: "POST",
+  //               data: JSON.stringify(reqItem),
+  //               contentType: "application/json; charset=utf-8",
+  //               dataType: "json",
+  //               success: function (response) {
+  //                   var div_success = $('body').find("#msg-success");
+  //                   div_success.show();
+  //                   div_success.children('div').text(response.message);
+  //                   var tr = $('table tr[data-id="' + id + '"]');
+  //                   tr.addClass("blink");
+  //                   setTimeout(() => {
+  //                        tr.removeClass("blink");
+  //                   }, 2000);
+  //               },
+  //               error: function(data) {
+  //                   var div_error = $('body').find("#msg-error");
+  //                   div_error.show();
+  //                   div_error.children('div').text(data.message);
+  //                   console.log(data.message);
+  //               }
+  //           });
+  //       }
 
-        function ReloadCancel(id) {
-            var row = $('table tr[data-id="' + id + '"]');
-            $.ajax({
-                url: "/warehouse/get-item?id=" + id,
-                type: "GET",
-                success: function(data) {
-                   $(row.find("input[name='Name']")).val(data.name);
-                   $(row.find("input[name='Quantity']")).val(data.quantity);
-                   $(row.find("input[name='Price']")).val(data.price);
-                   $(row.find("input[name='UniqueCode']")).val(data.uniqueCode);
-                   $(row.find("select[name='SuppliersId']")).val(data.suppliersId).change();
-                   $(row.find("select[name='Status']")).val(data.status).change();
-                },
-                error: function(data) {
-                   var div_error = $('body').find("#msg-error");
-                   div_error.show();
-                   div_error.children('div').text(data.message);
-                   console.log(data.message);
-                }
-            });
-        }
+  //       function ReloadCancel(id) {
+  //           var row = $('table tr[data-id="' + id + '"]');
+  //           $.ajax({
+  //               url: "/warehouse/get-item?id=" + id,
+  //               type: "GET",
+  //               success: function(data) {
+  //                  $(row.find("input[name='Name']")).val(data.name);
+  //                  $(row.find("input[name='Quantity']")).val(data.quantity);
+  //                  $(row.find("input[name='Price']")).val(data.price);
+  //                  $(row.find("input[name='UniqueCode']")).val(data.uniqueCode);
+  //                  $(row.find("select[name='SuppliersId']")).val(data.suppliersId).change();
+  //                  $(row.find("select[name='Status']")).val(data.status).change();
+  //               },
+  //               error: function(data) {
+  //                  var div_error = $('body').find("#msg-error");
+  //                  div_error.show();
+  //                  div_error.children('div').text(data.message);
+  //                  console.log(data.message);
+  //               }
+  //           });
+  //       }
 
-        $("#addNewButton").click(function () {
-			$("#addNewForm").toggle();
-		});
+  //       $("#addNewButton").click(function () {
+		// 	$("#addNewForm").toggle();
+		// });
 
-        $(document).on('click','body',function(){
-            $("#msg-success,#msg-error").hide();
-        });
+  //       $(document).on('click','body',function(){
+  //           $("#msg-success,#msg-error").hide();
+  //       });
 
-        $("#refresh").click(function () {
-			window.location.reload();
-		});
+  //       $("#refresh").click(function () {
+		// 	window.location.reload();
+		// });
 
-        /////////// * Multi delete functionalities * /////////////
+  //       /////////// * Multi delete functionalities * /////////////
      
-        //list check all/none handler
-        $(document).on('click', '.on-list-chkall', function (e){
-          var $cbs = $(".multicb", this.form).prop('checked', this.checked);
-          if (this.checked){
-            $cbs.closest("tr").addClass("selected");
-          }else{
-            $cbs.closest("tr").removeClass("selected");
-          }
-        });
+  //       //list check all/none handler
+  //       $(document).on('click', '.on-list-chkall', function (e){
+  //         var $cbs = $(".multicb", this.form).prop('checked', this.checked);
+  //         if (this.checked){
+  //           $cbs.closest("tr").addClass("selected");
+  //         }else{
+  //           $cbs.closest("tr").removeClass("selected");
+  //         }
+  //       });
 
-        $(document).on('click', '.on-delete-multi', function (e){
-          var el=this;
-          if (!el._is_confirmed){
-            e.preventDefault();
-            if (!$('.multicb:checked').length) return;//exit if no rows selected
-            if(confirm("Are you sure to delete multiple selected records?")){
-              el.closest("form").submit();
-            }else{
-                return false;
-            }
-          }
-        });
+  //       $(document).on('click', '.on-delete-multi', function (e){
+  //         var el=this;
+  //         if (!el._is_confirmed){
+  //           e.preventDefault();
+  //           if (!$('.multicb:checked').length) return;//exit if no rows selected
+  //           if(confirm("Are you sure to delete multiple selected records?")){
+  //             el.closest("form").submit();
+  //           }else{
+  //               return false;
+  //           }
+  //         }
+  //       });
 
-        //make list multi buttons floating if at least one row checked
-        $(document).on('click', '.on-list-chkall, .multicb', function (e) {
-            var $this = $(this);
-            var $bm = $('#list-btn-multi');
-            var len = $('.multicb:checked').length;
-            if (len>0){
-                //float
-                $bm.addClass('position-sticky');
-                $bm.find('.rows-num').text(len);
-            }else{
-            //de-float
-                $bm.removeClass('position-sticky');
-                $bm.find('.rows-num').text('');
-            }
-            if ($this.is(".multicb")){
-                if (this.checked){
-                    $this.closest("tr").addClass("selected");
-                }else{
-                    $this.closest("tr").removeClass("selected");
-                }
-            }
+  //       //make list multi buttons floating if at least one row checked
+  //       $(document).on('click', '.on-list-chkall, .multicb', function (e) {
+  //           var $this = $(this);
+  //           var $bm = $('#list-btn-multi');
+  //           var len = $('.multicb:checked').length;
+  //           if (len>0){
+  //               //float
+  //               $bm.addClass('position-sticky');
+  //               $bm.find('.rows-num').text(len);
+  //           }else{
+  //           //de-float
+  //               $bm.removeClass('position-sticky');
+  //               $bm.find('.rows-num').text('');
+  //           }
+  //           if ($this.is(".multicb")){
+  //               if (this.checked){
+  //                   $this.closest("tr").addClass("selected");
+  //               }else{
+  //                   $this.closest("tr").removeClass("selected");
+  //               }
+  //           }
 
-            //also fill item_id with comma-separated checked ids
-            var ids=[];
-            $('.multicb:checked').each(function (i,el){
-                var name = el.name.replace('cb[', '');
-                name = name.replace(']', '');
-                ids.push(name); //leave just id
-            });
-            if (ids.length) $('form[name="form_delete"]').find('input[name="cbitems"]').val(ids.join(','));
-        });
+  //           //also fill item_id with comma-separated checked ids
+  //           var ids=[];
+  //           $('.multicb:checked').each(function (i,el){
+  //               var name = el.name.replace('cb[', '');
+  //               name = name.replace(']', '');
+  //               ids.push(name); //leave just id
+  //           });
+  //           if (ids.length) $('form[name="form_delete"]').find('input[name="cbitems"]').val(ids.join(','));
+  //       });
 
-    </script>
-} 
+</script>
+@* }  *@ 

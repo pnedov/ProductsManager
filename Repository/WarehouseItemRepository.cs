@@ -57,7 +57,6 @@ public class WarehouseItemRepository : IWarehouseItemRepository
         var newItem = _mapper.Map<WarehouseItem>(item);
         _context.Entry(newItem).State = EntityState.Modified;
         _context.WarehouseItems.Add(newItem);
-        
         await _context.SaveChangesAsync(token);
     }
 
@@ -68,7 +67,6 @@ public class WarehouseItemRepository : IWarehouseItemRepository
         _context.Entry(oldItem).State = EntityState.Detached; // Detach the old entity
         _context.Entry(updItem).State = EntityState.Modified; // Attach and mark the new entity as modified
         _context.WarehouseItems.Update(updItem);
-
         await _context.SaveChangesAsync(token);
     }
 
@@ -91,8 +89,6 @@ public class WarehouseItemRepository : IWarehouseItemRepository
         {
             throw new InvalidOperationException("No items found for deletion.");
         }
-
-        //_context.Entry(items).State = EntityState.Deleted;
         _context.WarehouseItems.RemoveRange(items);
         await _context.SaveChangesAsync(token);
     }
