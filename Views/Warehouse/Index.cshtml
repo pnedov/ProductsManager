@@ -5,6 +5,10 @@
     string failure_msg = (TempData["Error"] != null) ? TempData["Error"].ToString() : "";
     string display_succes = !string.IsNullOrEmpty(success_msg) ? "block" : "none";
     string display_error =  !string.IsNullOrEmpty(failure_msg) ? "block" : "none";
+    string? start_date = Model.Filters.Start;
+    string? end_date = Model.Filters.End;
+    int? status_id = Model.Filters.Status;
+    int? suppliers_id = Model.Filters.SuppliersId;
 }
 
 <h1>Warehouse Items</h1>
@@ -27,7 +31,7 @@
         <div class="row">
             <div class="col-md-4">
                 <div class="form-group">
-                    <label class="col-form-label col-md-4 req">Product Name</label>
+                    <label class="col-form-label col-md-4">Product Name</label>
                     <input type="text" id="Name" name="Name" value="@Model.Item.Name" placeholder="Product Name" class="form-control">
                     @Html.ValidationMessageFor(m => m.Item.Name, "", new { @class = "text-danger" })
                 
@@ -94,15 +98,95 @@
 
 <!-- Search Fields-->
 
-<form asp-action="Index" method="get">
-    <!--<p>
-        Name: <input type="text" name="SearchString" value="@Model.SearchString" />
-        Supplier: <input type="text" name="Supplier" value="@Model.Supplier" />
-        Min Quantity: <input type="number" name="MinQuantity" value="@Model.MinQuantity" />
-        Max Quantity: <input type="number" name="MaxQuantity" value="@Model.MaxQuantity" />
-        <input type="submit" value="Search" />
-    </p>
-    -->
+<form asp-action="search" method="get">
+    <div class="container pt-4 pb-3">
+        <div class="row">
+            <div class="col-md-11">
+                <input type="text" name="searchParam" value="@Model.SearchString" class="form-control"/>
+            </div>
+            <div class="col">
+                <input type="submit" value="Search" id="btnSearch" class="btn btn-primary" class="form-control" />
+            </div>
+        </div>
+    </div>
+</form>
+
+<!-- Filters Fields-->
+
+<form asp-action="filters" method="get" id="formFilters">
+ <div class="container pt-4 pb-3">
+    <div class="row form-row">
+       <div class="col-md-9">
+             <div class="row form-row">
+                <div class="col text-end">
+                    <label class="col-form-label">Status</label>
+                </div>
+                <div class="col-md-2 col-lg-2">
+                    <select id="Status" name="Status" class="form-select">
+                        <option value="">--- select ---</option>
+                        @foreach (var status in Model.Statuses)
+                        {
+                            var selected_flag = int.Parse(status.Value) == status_id ? "selected" : "";
+
+                            if (!string.IsNullOrEmpty(selected_flag))
+                            {
+
+                                <option value="@status.Value" selected="@selected_flag">@status.Text</option>
+                            }
+                            else
+                            {
+                                <option value="@status.Value">@status.Text</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-md-1 text-end">
+                    <label class="col-form-label">Suppliers</label>
+                </div>
+                <div class="col-md-2 col-lg-2">
+                    <select id="SuppliersId" name="SuppliersId" class="form-select">
+                        <option value="">--- select ---</option>
+                        @foreach (var supplier in Model.Suppliers)
+                        {
+                            var selected_flag = supplier.Id == suppliers_id ? "selected" : "";
+                            if (!string.IsNullOrEmpty(selected_flag))
+                            {
+                                <option value="@supplier.Id" selected="@selected_flag">@supplier.Name</option>
+                            }
+                            else
+                            {
+                                <option value="@supplier.Id">@supplier.Name</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="col-md-1 text-end">
+                    <label class="col-form-label">From</label>
+                </div>
+                <div class="col-md-2 col-lg-2 text-start">
+                    <div class="input-group date">
+                            <input id="start" name="start" maxlength="10" value="@start_date" type="date" class="form-control">
+                    </div>
+                </div>
+
+                <div class="col-md-1 text-end">
+                    <label class="col-form-label">To</label>
+                </div>
+                <div class="col-md-2 col-lg-2">
+                    <div class="input-group date">
+                            <input id="end" name="end" maxlength="10" value="@end_date" type="date" class="form-control">
+                    </div>
+                </div>
+            </div>
+       </div>
+            <div class="col-md-2 col-lg-2">
+                <div class="input-group date">
+                    <button id="cancel" class="btn btn-secondary">Cancel</button>
+                </div>
+            </div>
+    </div>
+  </div>
 </form>
 
 <!-- Grid Items-->
@@ -110,7 +194,7 @@
 <table class="table table-sm table-hover list">
     <thead>
         <tr>
-            <td colspan="8"> 
+            <td colspan="10"> 
                  <div id="msg-success" style="display:@display_succes;">
                      <div class="alert alert-success">@success_msg</div>
                 </div>
@@ -121,12 +205,13 @@
         </tr>
         <tr>
             <th><input type="checkbox" name="all" value="1" class="on-list-chkall"></th>
-            <th>@Html.DisplayNameFor(model => model.Items.First().Name)</th>
-            <th>@Html.DisplayNameFor(model => model.Items.First().Quantity)</th>
-            <th>@Html.DisplayNameFor(model => model.Items.First().Price)</th>
-            <th>@Html.DisplayNameFor(model => model.Items.First().UniqueCode)</th>
-            <th>@Html.DisplayNameFor(model => model.Items.First().Suppliers)</th>
-            <th>@Html.DisplayNameFor(model => model.Items.First().Status)</th>
+            <th class="text-center">Id</th>
+            <th class="text-center">Name</th>
+            <th class="text-center">Quantity</th>
+            <th class="text-center">Price</th>
+            <th class="text-center">Unique Code</th>
+            <th class="text-center">Suppliers</th>
+            <th class="text-center">Status</th>
             <th></th>
             <th></th>
         </tr>
@@ -139,6 +224,11 @@
                 <tr data-id="@item.Id">
                     <td>
                         <input class="multicb mt-3" type="checkbox" name="cb[@item.Id]" value="1" />
+                    </td>
+                    <td>
+                        <div class="container">
+                            <div class="pt-2 start-1">@item.Id</div>
+                        </div>
                     </td>
                     <td>
                         <input type="text" name="Name" value="@item.Name" class="form-control" />
@@ -199,7 +289,7 @@
         else
         { 
             <tr>
-                <td colspan="8">No items available</td>
+                <td colspan="9">No items available</td>
             </tr>  
         }
     </tbody>
@@ -211,137 +301,3 @@
         </div>
         <input type="hidden" id="cbitems" name="cbitems" />
     </form>
-
-@* @section Scripts {*@
-    <script> 
-  //       function SaveEdit(id) {
-  //           console.log(id);
-  //           var row = document.querySelector(`tr[data-id='${id}']`);
-  //           var reqItem = {
-  //               "Id": id,
-  //               "Name" : row.querySelector("input[name='Name']").value,
-  //               "Quantity" : row.querySelector("input[name='Quantity']").value,
-  //               "Price" : row.querySelector("input[name='Price']").value,
-  //               "UniqueCode" : row.querySelector("input[name='UniqueCode']").value,
-  //               "SuppliersId": row.querySelector("select[name='SuppliersId']").value,
-  //               "Status": row.querySelector("select[name='Status']").value
-  //           };
-
-  //           $.ajax({
-  //               url: "/warehouse/edit",
-  //               type: "POST",
-  //               data: JSON.stringify(reqItem),
-  //               contentType: "application/json; charset=utf-8",
-  //               dataType: "json",
-  //               success: function (response) {
-  //                   var div_success = $('body').find("#msg-success");
-  //                   div_success.show();
-  //                   div_success.children('div').text(response.message);
-  //                   var tr = $('table tr[data-id="' + id + '"]');
-  //                   tr.addClass("blink");
-  //                   setTimeout(() => {
-  //                        tr.removeClass("blink");
-  //                   }, 2000);
-  //               },
-  //               error: function(data) {
-  //                   var div_error = $('body').find("#msg-error");
-  //                   div_error.show();
-  //                   div_error.children('div').text(data.message);
-  //                   console.log(data.message);
-  //               }
-  //           });
-  //       }
-
-  //       function ReloadCancel(id) {
-  //           var row = $('table tr[data-id="' + id + '"]');
-  //           $.ajax({
-  //               url: "/warehouse/get-item?id=" + id,
-  //               type: "GET",
-  //               success: function(data) {
-  //                  $(row.find("input[name='Name']")).val(data.name);
-  //                  $(row.find("input[name='Quantity']")).val(data.quantity);
-  //                  $(row.find("input[name='Price']")).val(data.price);
-  //                  $(row.find("input[name='UniqueCode']")).val(data.uniqueCode);
-  //                  $(row.find("select[name='SuppliersId']")).val(data.suppliersId).change();
-  //                  $(row.find("select[name='Status']")).val(data.status).change();
-  //               },
-  //               error: function(data) {
-  //                  var div_error = $('body').find("#msg-error");
-  //                  div_error.show();
-  //                  div_error.children('div').text(data.message);
-  //                  console.log(data.message);
-  //               }
-  //           });
-  //       }
-
-  //       $("#addNewButton").click(function () {
-		// 	$("#addNewForm").toggle();
-		// });
-
-  //       $(document).on('click','body',function(){
-  //           $("#msg-success,#msg-error").hide();
-  //       });
-
-  //       $("#refresh").click(function () {
-		// 	window.location.reload();
-		// });
-
-  //       /////////// * Multi delete functionalities * /////////////
-     
-  //       //list check all/none handler
-  //       $(document).on('click', '.on-list-chkall', function (e){
-  //         var $cbs = $(".multicb", this.form).prop('checked', this.checked);
-  //         if (this.checked){
-  //           $cbs.closest("tr").addClass("selected");
-  //         }else{
-  //           $cbs.closest("tr").removeClass("selected");
-  //         }
-  //       });
-
-  //       $(document).on('click', '.on-delete-multi', function (e){
-  //         var el=this;
-  //         if (!el._is_confirmed){
-  //           e.preventDefault();
-  //           if (!$('.multicb:checked').length) return;//exit if no rows selected
-  //           if(confirm("Are you sure to delete multiple selected records?")){
-  //             el.closest("form").submit();
-  //           }else{
-  //               return false;
-  //           }
-  //         }
-  //       });
-
-  //       //make list multi buttons floating if at least one row checked
-  //       $(document).on('click', '.on-list-chkall, .multicb', function (e) {
-  //           var $this = $(this);
-  //           var $bm = $('#list-btn-multi');
-  //           var len = $('.multicb:checked').length;
-  //           if (len>0){
-  //               //float
-  //               $bm.addClass('position-sticky');
-  //               $bm.find('.rows-num').text(len);
-  //           }else{
-  //           //de-float
-  //               $bm.removeClass('position-sticky');
-  //               $bm.find('.rows-num').text('');
-  //           }
-  //           if ($this.is(".multicb")){
-  //               if (this.checked){
-  //                   $this.closest("tr").addClass("selected");
-  //               }else{
-  //                   $this.closest("tr").removeClass("selected");
-  //               }
-  //           }
-
-  //           //also fill item_id with comma-separated checked ids
-  //           var ids=[];
-  //           $('.multicb:checked').each(function (i,el){
-  //               var name = el.name.replace('cb[', '');
-  //               name = name.replace(']', '');
-  //               ids.push(name); //leave just id
-  //           });
-  //           if (ids.length) $('form[name="form_delete"]').find('input[name="cbitems"]').val(ids.join(','));
-  //       });
-
-</script>
-@* }  *@ 

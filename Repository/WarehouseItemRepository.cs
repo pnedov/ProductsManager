@@ -17,7 +17,7 @@ public class WarehouseItemRepository : IWarehouseItemRepository
 
     public async Task<List<WarehouseItem>> GetItemsAsync(CancellationToken token)
     {
-        return await _context.WarehouseItems.ToListAsync(token);
+        return await _context.WarehouseItems.OrderByDescending(x=>x.AddDate).ToListAsync(token);
     }
 
     public async Task<List<WarehouseItem>> GetItemsAsync(int supplierId, CancellationToken token)
@@ -97,16 +97,62 @@ public class WarehouseItemRepository : IWarehouseItemRepository
     {
         return await _context.Suppliers.ToListAsync(token);
     }
-    public void RefreshDbContext()
-    {
-        var changedEntries = _context.ChangeTracker.Entries()
-            .Where(e => e.State != EntityState.Unchanged)
-            .ToList();
 
-        foreach (var entry in changedEntries)
-        {
-            entry.State = EntityState.Detached;
-        }
+    public async Task<List<WarehouseItem>> GetItemsBySearchAsync(string searchParam, CancellationToken token)
+    {
+        var query = _context.WarehouseItems.AsQueryable();
+        int searchId = 0;
+        int.TryParse(searchParam, out searchId);
+        query = query.Where(item =>
+            item.Name.Contains(searchParam) ||
+            item.UniqueCode.Contains(searchParam) ||
+            item.Quantity.ToString().Contains(searchParam) ||
+            item.Price.ToString().Contains(searchParam) ||
+            item.Suppliers.Name.Contains(searchParam) ||
+            item.Id == searchId); 
+
+        return await query.OrderByDescending(x => x.AddDate).ToListAsync(token);
     }
+
+    public async Task<List<WarehouseItem>> GetItemsByFiltersAsync(string? searchParam, int? status, int? supplierId, string? start, string? end, CancellationToken token)
+    {
+        var query = _context.WarehouseItems.AsQueryable();
+
+        if (status.HasValue)
+        {
+            query = query.Where(x => x.Status == status.Value);
+        }
+
+        if (supplierId.HasValue)
+        {
+            query = query.Where(x => x.SuppliersId == supplierId.Value);
+        }
+
+        if (DateTime.TryParse(start, out var startDate))
+        {
+            query = query.Where(x => x.AddDate >= startDate);
+        }
+
+        if (DateTime.TryParse(end, out var endDate))
+        {
+            query = query.Where(x => x.AddDate <= endDate);
+        }
+
+        if (!string.IsNullOrEmpty(searchParam))
+        {
+            int searchId = 0;
+            int.TryParse(searchParam, out searchId);
+            query = query.Where(item =>
+                item.Name.Contains(searchParam) ||
+                item.UniqueCode.Contains(searchParam) ||
+                item.Quantity.ToString().Contains(searchParam) ||
+                item.Price.ToString().Contains(searchParam) ||
+                item.Suppliers.Name.Contains(searchParam) ||
+                item.Id == searchId);
+        }
+
+        return await query.OrderByDescending(x => x.AddDate).ToListAsync(token);
+    }
+
 }
 

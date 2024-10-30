@@ -47,3 +47,19 @@ body {
   left: var(--fw-sidebar-width);
   padding-bottom: var(--fw-spacer);
 }
+
+.report-tr-hr {
+  border-top-color: black;
+  border-top-width: 2px;
+}
+
+.report-tr-bt-hr {
+    border-bottom-color: black;
+    border-bottom-width: 2px;
+    border-top-color: black;
+    border-top-width: 2px;
+}
+
+.report_td_bold {
+    border-top-3 fw-bold;
+}

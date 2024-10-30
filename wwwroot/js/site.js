@@ -69,7 +69,7 @@ $(document).on('click', 'body', function () {
     $("#msg-success,#msg-error").hide();
 });
 
-$("#refresh").click(function () {
+$(document).on('click', '#refresh', function () {
     window.location.reload();
 });
 
@@ -129,4 +129,19 @@ $(document).on('click', '.on-list-chkall, .multicb', function (e) {
     });
     if (ids.length) $('form[name="form_delete"]').find('input[name="cbitems"]').val(ids.join(','));
 });
+
+
+//filters auto-submit
+$(document).on('change', '#formFilters', function (e) {
+    $(this).closest('form').submit();
+});
+
+$(document).on('click', '#btnCancel', function (e) {
+    e.preventDefault();
+    $("#formIndex").submit();
+});
+
+
+
+
 

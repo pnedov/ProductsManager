@@ -17,7 +17,7 @@ public class WarehouseItem
 
     [Required(ErrorMessage = "Name is required.")]
     [Column("iname", Order = 2, TypeName = "nvarchar(64)")]
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
     [Required]
     [Column("unique_code", Order = 3, TypeName = "nvarchar(64)")]
@@ -40,7 +40,6 @@ public class WarehouseItem
     public DateTime AddDate { get; set; } = DateTime.Now;
 
     [Column("upd_date", Order = 7, TypeName = "datetime2")]
-    [DefaultValue(typeof(DateTime), "0001-01-01")]
     public DateTime UpdDate { get; set; }
 
     [Required]
@@ -50,10 +49,11 @@ public class WarehouseItem
     public Suppliers Suppliers { get; set; } = new();
 }
 
+// list of item's statuses
 public enum Statuses
 {
     Active = 0,
-    Disabled = 1,
-    Deleted = 2
+    Sold = 1,
+    Paused = 2
 }
 
