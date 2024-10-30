@@ -10,20 +10,20 @@
 <h1>Report Items (@Model.TotalRecords)</h1>
 
 <!-- Search Fields-->
+
 <form asp-action="main" method="get" id="formIndex"></form>
 
 <form asp-action="filters" method="get" id="formFilters">
 <div class="container pt-4 pb-3">
     <div class="row">
         <div class="col-md-11">
-                <input type="text" name="searchParam" value="@Model.Filters.SearchString" class="form-control" />
+            <input type="text" name="searchParam" value="@Model.Filters.SearchString" class="form-control" />
         </div>
         <div class="col">
             <input type="submit" value="Search" id="btnSearch" class="btn btn-primary" />
         </div>
     </div>
 </div>
-@* </form> *@
 
 <!-- Filters Fields-->
 
@@ -31,10 +31,10 @@
  <div class="container pt-4 pb-3">
     <div class="row form-row">
        <div class="col-md-10">
-             <div class="row form-row">
-                <div class="col-md-1 text-end px-0">
-                <label class="col-form-label">Status</label>
-             </div>
+            <div class="row form-row">
+               <div class="col-md-1 text-end px-0">
+               <label class="col-form-label">Status</label>
+            </div>
             <div class="col-md-2 col-lg-2">
                 <select id="Status" name="Status" class="form-select">
                     <option value="">--- select ---</option>
@@ -102,8 +102,6 @@
      </div>
   </div>
 </form>
-
-
 
 <!-- *** Grid Items ***-->
 

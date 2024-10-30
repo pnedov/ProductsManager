@@ -33,17 +33,8 @@ public class ReportController : Controller
     public async Task<IActionResult> FilterWarehouseItems(string searchParam, int? status, int? suppliersid, string? start, string? end, CancellationToken token)
     {
         WarehouseViewModel model = new();
-        //if (!status.HasValue && !suppliersid.HasValue && string.IsNullOrEmpty(start) && string.IsNullOrEmpty(end))
-        //{
-        //    var result = await _repo.GetItemsAsync(token);
-        //    model = await PopulateItemsAsync(result, token);
-        //}
-        //else
-        //{
-            var result = await _repo.GetItemsByFiltersAsync(searchParam, status, suppliersid, start, end, token);
-            model = await PopulateItemsAsync(result, token);
-       // }
-
+        var result = await _repo.GetItemsByFiltersAsync(searchParam, status, suppliersid, start, end, token);
+        model = await PopulateItemsAsync(result, token);
         model.Filters = new WarehouseItemFilters()
         {
             Status = status,
