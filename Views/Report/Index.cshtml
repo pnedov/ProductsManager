@@ -1,33 +1,33 @@
 ﻿@model WarehouseViewModel
 
 @{
-    string? start_date = Model.Filters.Start;
-    string? end_date = Model.Filters.End;
+    string? start_date_add = Model.Filters.StartAddSate;
+    string? end_date_add = Model.Filters.EndAddDate;
+    string? start_date_upd = Model.Filters.StartUpdDate;
+    string? end_date_upd = Model.Filters.EndUpdDate;
     int? status_id = Model.Filters.Status;
     int? suppliers_id = Model.Filters.SuppliersId;
+    string? product_name = Model.Filters.ProductName;
 }
 
 <h1>Report Items (@Model.TotalRecords)</h1>
 
-<!-- Search Fields-->
-
 <form asp-action="main" method="get" id="formIndex"></form>
+
+<!-- Filters Fields-->
 
 <form asp-action="filters" method="get" id="formFilters">
 <div class="container pt-4 pb-3">
     <div class="row">
-        <div class="col-md-11">
+        <div class="col-md-10">
             <input type="text" name="searchParam" value="@Model.Filters.SearchString" class="form-control" />
         </div>
-        <div class="col">
+            <div class="col-md-2 mx-auto" style="display: inline-block; vertical-align: top;">
             <input type="submit" value="Search" id="btnSearch" class="btn btn-primary" />
+             <input type="button" id="btnCancel" class="btn btn-secondary" value="Cancel" />
         </div>
     </div>
 </div>
-
-<!-- Filters Fields-->
-
-@* <form asp-action="filter" method="get" id="formFilters"> *@
  <div class="container pt-4 pb-3">
     <div class="row form-row">
        <div class="col-md-10">
@@ -54,7 +54,7 @@
                     }
                 </select>
             </div>
-                <div class="col-md-1 text-end px-0">
+            <div class="col-md-1 text-end px-0">
                 <label class="col-form-label">Suppliers</label>
             </div>
             <div class="col-md-2 col-lg-2">
@@ -74,33 +74,64 @@
                     }
                 </select>
             </div>
-                <div class="col-md-1 text-end px-0">
-                <label class="col-form-label">From</label>
+            <div class="col-md-1 text-end px-0">
+                <label class="col-form-label">Products</label>
             </div>
-            <div class="col-md-2 text-start">
-                <div class="input-group date">
-                    <input id="start" name="start" maxlength="10" value="@start_date" type="date" class="form-control">
-                </div>
-            </div>
-                <div class="col-md-1 text-end px-0" style="width:5%;">
-                <label class="col-form-label">To</label>
-            </div>
-            <div class="col-md-2">
-                <div class="input-group date">
-                    <input id="end" name="end" maxlength="10" value="@end_date" type="date" class="form-control">
-                </div>
-            </div>
-            </div>
-        </div>
-        <div class="col-md-2">
             <div class="col-md-2 col-lg-2">
-                <div class="input-group">
-                    <button id="btnCancel" class="btn btn-secondary">Cancel</button>
+                    <select id="ProductName" name="ProductName" class="form-select">
+                    <option value="">--- select ---</option>
+                    @foreach (var product in Model.Products)
+                    {
+                        var selected_flag = product == product_name ? "selected" : "";
+                        if (!string.IsNullOrEmpty(selected_flag))
+                        {
+                            <option value="@product" selected="@selected_flag">@product</option>
+                        }
+                        else
+                        {
+                            <option value="@product">@product</option>
+                        }
+                    }
+                </select>
+            </div>
+            </div>
+            <div class="row form-row pt-4">
+                <div class="col-md-1 text-end px-0">
+                    <label class="col-form-label">From Add</label>
                 </div>
+                <div class="col-md-2 text-start">
+                    <div class="input-group date">
+                        <input id="start_add" name="start_add" maxlength="10" value="@start_date_add" type="date" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-1 text-end px-0">
+                    <label class="col-form-label">To Add</label>
+                </div>
+                <div class="col-md-2">
+                    <div class="input-group date">
+                        <input id="end_add" name="end_add" maxlength="10" value="@end_date_add" type="date" class="form-control">
+                    </div>
+                </div>
+                    <div class="col-md-1 text-end px-0">
+                        <label class="col-form-label px-0 text-nowrap">From Update</label>
+                    </div>
+                    <div class="col-md-2 text-start">
+                        <div class="input-group date">
+                            <input id="start_upd" name="start_upd" maxlength="10" value="@start_date_upd" type="date" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-1 text-end px-0">
+                        <label class="col-form-label">To Update</label>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="input-group date">
+                            <input id="end_upd" name="end_upd" maxlength="10" value="@end_date_upd" type="date" class="form-control">
+                        </div>
+                    </div>
             </div>
         </div>
-     </div>
-  </div>
+   </div>
+ </div>
 </form>
 
 <!-- *** Grid Items ***-->

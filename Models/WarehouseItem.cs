@@ -19,15 +19,16 @@ public class WarehouseItem
     [Column("iname", Order = 2, TypeName = "nvarchar(64)")]
     public string Name { get; set; } = string.Empty;
 
-    [Required]
+    [Required(ErrorMessage = "Unique Code is required.")]
     [Column("unique_code", Order = 3, TypeName = "nvarchar(64)")]
     public string UniqueCode { get; set; } = string.Empty;
 
-    [Required]
+    [Required(ErrorMessage = "Quantity is required.")]
     [Column("quantity", Order = 4, TypeName = "int")]
     public int Quantity { get; set; }
 
-    [Required]
+    [Required(ErrorMessage = "Price is required.")]
+    [Range(0, 999.99)]
     [Column("price", Order = 4, TypeName = "decimal(19, 4)")]
     public decimal Price { get; set; }
 
@@ -42,7 +43,7 @@ public class WarehouseItem
     [Column("upd_date", Order = 7, TypeName = "datetime2")]
     public DateTime UpdDate { get; set; }
 
-    [Required]
+    [Required(ErrorMessage = "Supplier is required.")]
     [Column("suppliers_id", Order = 8, TypeName = "int")]
     public int SuppliersId { get; set; }
 

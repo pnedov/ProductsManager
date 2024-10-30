@@ -114,7 +114,7 @@ public class WarehouseItemRepository : IWarehouseItemRepository
         return await query.OrderByDescending(x => x.AddDate).ToListAsync(token);
     }
 
-    public async Task<List<WarehouseItem>> GetItemsByFiltersAsync(string? searchParam, int? status, int? supplierId, string? start, string? end, CancellationToken token)
+    public async Task<List<WarehouseItem>> GetItemsByFiltersAsync(string? searchParam, string? productName, int? status, int? supplierId, string? startAdd, string? endAdd, string? startUpd, string? endUpd, CancellationToken token)
     {
         var query = _context.WarehouseItems.AsQueryable();
 
@@ -128,14 +128,29 @@ public class WarehouseItemRepository : IWarehouseItemRepository
             query = query.Where(x => x.SuppliersId == supplierId.Value);
         }
 
-        if (DateTime.TryParse(start, out var startDate))
+        if (!string.IsNullOrEmpty(productName))
         {
-            query = query.Where(x => x.AddDate >= startDate);
+            query = query.Where(x => x.Name.Contains(productName.Trim()));
         }
 
-        if (DateTime.TryParse(end, out var endDate))
+        if (!string.IsNullOrEmpty(startAdd) && DateTime.TryParse(startAdd, out var startAddDate))
         {
-            query = query.Where(x => x.AddDate <= endDate);
+            query = query.Where(x => x.AddDate >= startAddDate);
+        }
+
+        if (!string.IsNullOrEmpty(endAdd) && DateTime.TryParse(endAdd, out var endAddDate))
+        {
+            query = query.Where(x => x.AddDate <= endAddDate);
+        }
+
+        if (!string.IsNullOrEmpty(startUpd) && DateTime.TryParse(startUpd, out var startUpdDate))
+        {
+            query = query.Where(x => x.UpdDate >= startUpdDate);
+        }
+
+        if (!string.IsNullOrEmpty(endUpd) && DateTime.TryParse(endUpd, out var endUpdDate))
+        {
+            query = query.Where(x => x.UpdDate <= endUpdDate);
         }
 
         if (!string.IsNullOrEmpty(searchParam))

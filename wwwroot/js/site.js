@@ -136,7 +136,8 @@ $(document).on('change', '#formFilters', function (e) {
     $(this).closest('form').submit();
 });
 
-$(document).on('click', '#btnCancel', function (e) {
+//cancel button
+$(document).on('click', "input[name = 'cancel']", function (e) {
     e.preventDefault();
     $("#formIndex").submit();
 });

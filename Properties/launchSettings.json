@@ -14,7 +14,7 @@
         "dotnetRunMessages": true,
         "launchBrowser": true,
         "applicationUrl": "http://localhost:5056",
-        "launchUrl": "warehouse/main",
+        "launchUrl": "system/db-init",
         "environmentVariables": {
             "ASPNETCORE_ENVIRONMENT": "Development"
         }

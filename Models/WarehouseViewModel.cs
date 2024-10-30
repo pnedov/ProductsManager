@@ -5,9 +5,6 @@ namespace ProductsManager.Models;
 public class WarehouseViewModel
 {
     public string? SearchString { get; set; } = String.Empty;
-    public string? Supplier { get; set; } = String.Empty;
-    public int MinQuantity { get; set; }
-    public int MaxQuantity { get; set; }
     public List<WarehouseItem>? Items { get; set; } = new();
     public WarehouseItem? Item { get; set; } = new();
     public IEnumerable<SelectListItem> Statuses { get; set; } = new List<SelectListItem>();
@@ -18,14 +15,18 @@ public class WarehouseViewModel
     public int TotalSuppliers { get; set; }
     public int TotalProducts{ get; set; }
     public int TotalRecords { get; set; }
+    public List<string> Products { get; set; } = new();
 }
 
 public struct WarehouseItemFilters
 {
-    public string? End { get; set; }
-    public string? Start { get; set; }
+    public string? StartAddSate { get; set; }
+    public string? EndAddDate { get; set; }
+    public string? StartUpdDate { get; set; }   
+    public string? EndUpdDate { get; set; }
     public int? SuppliersId { get; set; }
     public int? Status { get; set; }
     public string? SearchString { get; set; }
+    public string?  ProductName { get; set; }
 }
 

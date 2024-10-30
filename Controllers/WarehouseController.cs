@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using ProductsManager.Controllers;
 using ProductsManager.Models;
 using ProductsManager.Repository;
@@ -134,7 +133,7 @@ public class WarehouseController : Controller
     }
 
     [HttpGet("filters")]
-    public async Task<IActionResult> FilterWarehouseItems(string? searchParam, int? status, int? suppliersid, string? start, string? end, CancellationToken token)
+    public async Task<IActionResult> FilterWarehouseItems(string? searchParam, string? productName, int? status, int? suppliersid, string? start, string? end, string? startUpd, string? endUpd, CancellationToken token)
     {
         WarehouseViewModel model = new();
         if (!status.HasValue && !suppliersid.HasValue && string.IsNullOrEmpty(start) && string.IsNullOrEmpty(end))
@@ -143,7 +142,7 @@ public class WarehouseController : Controller
         }
         else
         {
-            model.Items = await _repo.GetItemsByFiltersAsync(searchParam, status, suppliersid, start, end, token);
+            model.Items = await _repo.GetItemsByFiltersAsync(searchParam, productName, status, suppliersid, start, end, startUpd, endUpd, token);
         }
         model.Suppliers = await _repo.GetSuppliersAsync(token);
         model.Statuses = Enum.GetValues<Statuses>()
@@ -157,8 +156,9 @@ public class WarehouseController : Controller
         {
             Status = status,
             SuppliersId = suppliersid,
-            Start = start,
-            End = end
+            StartAddSate = start,
+            EndAddDate = end,
+            ProductName = productName
         };
 
         return View("Index", model);

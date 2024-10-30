@@ -30,17 +30,20 @@ public class ReportController : Controller
     }
 
     [HttpGet("filters")]
-    public async Task<IActionResult> FilterWarehouseItems(string searchParam, int? status, int? suppliersid, string? start, string? end, CancellationToken token)
+    public async Task<IActionResult> FilterWarehouseItems(string searchParam, string? productName, int? status, int? suppliersid, string? start_add, string? end_add, string? start_upd, string? end_upd, CancellationToken token)
     {
         WarehouseViewModel model = new();
-        var result = await _repo.GetItemsByFiltersAsync(searchParam, status, suppliersid, start, end, token);
+        var result = await _repo.GetItemsByFiltersAsync(searchParam, productName, status, suppliersid, start_add, end_add, start_upd, end_upd, token);
         model = await PopulateItemsAsync(result, token);
         model.Filters = new WarehouseItemFilters()
         {
             Status = status,
             SuppliersId = suppliersid,
-            Start = start,
-            End = end,
+            StartAddSate = start_add,
+            EndAddDate = end_add,
+            EndUpdDate = end_upd,
+            StartUpdDate = start_upd,
+            ProductName = productName,
             SearchString = searchParam
         };
        
@@ -71,6 +74,8 @@ public class ReportController : Controller
     {
         WarehouseViewModel model = new();
         model.Items = items;
+        var allItems = await _repo.GetItemsAsync(token);
+        model.Products = allItems.Select(item => item.Name).Distinct().ToList();
         model.TotalRecords = items.Count;
         model.TotalProducts = items.Select(item => item.Name).Distinct().Count();
         model.TotalPrice = items.Sum(item => item.Price);

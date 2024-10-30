@@ -4,7 +4,7 @@ using ProductsManager.Services;
 namespace ProductsManager.Controllers;
 
 [ApiController]
-[Route("api/system")]
+[Route("system")]
 public class InitializeDatabaseController : ControllerBase
 {
     private ILogger<InitializeDatabaseController> _logger;
@@ -23,7 +23,8 @@ public class InitializeDatabaseController : ControllerBase
         {
             await _service.InitializeDatabaseAsync(token);
 
-            return Ok("result");
+            //return Ok("result");
+            return RedirectToAction("Index", "Warehouse");
         }
         catch (Exception ex)
         {

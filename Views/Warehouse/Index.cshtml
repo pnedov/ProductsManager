@@ -5,65 +5,65 @@
     string failure_msg = (TempData["Error"] != null) ? TempData["Error"].ToString() : "";
     string display_succes = !string.IsNullOrEmpty(success_msg) ? "block" : "none";
     string display_error =  !string.IsNullOrEmpty(failure_msg) ? "block" : "none";
-    string? start_date = Model.Filters.Start;
-    string? end_date = Model.Filters.End;
+    string? start_date = Model.Filters.StartAddSate;
+    string? end_date = Model.Filters.EndAddDate;
     int? status_id = Model.Filters.Status;
     int? suppliers_id = Model.Filters.SuppliersId;
 }
+
+<form asp-action="main" method="get" id="formIndex"></form>
 
 <h1>Warehouse Items</h1>
 
 <div class="container p-3">
     <div class="row">
-        <div class="col-md-6 d-flex justify-content-start">
-            <button id="addNewButton" class="btn btn-primary">Add New</button>
-        </div>
-        <div class="col-md-6 d-flex justify-content-end">
-            <button id="refresh" class="btn btn-success">Refresh</button>
+        <div class="col-md-10 d-flex justify-content-end text-end">
+            <input type="button" id="addNewButton" class="btn btn-primary mx-3" value="Add New" />
+            <input type="button" id="refresh" name="cancel"  class="btn btn-success" value="Refresh" />
         </div>
     </div>
 </div>
 
 <div id="addNewForm" style="display:none;">
 	<h4>Add New Warehouse Item</h4>
-    <hr />
-    <form asp-action="Create" method="post" id="addNewForm" name="addNewForm">
-        <div class="row">
+   
+    <form asp-action="Create" method="post" id="addNewForm2">
+        <div class="row col-md-10 col-lg-10">
+            <hr />
             <div class="col-md-4">
                 <div class="form-group">
-                    <label class="col-form-label col-md-4">Product Name</label>
-                    <input type="text" id="Name" name="Name" value="@Model.Item.Name" placeholder="Product Name" class="form-control">
+                    <label class="col-form-label col-md-4" asp-for="Item.Name">Product Name</label>
+                    <input type="text" asp-for="Item.Name" id="Name" name="Name" value="" placeholder="Product Name" class="form-control">
                     @Html.ValidationMessageFor(m => m.Item.Name, "", new { @class = "text-danger" })
-                
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="col-form-label col-md-4">Unique Code</label>
-                    <input type="text" id="UniqueCode" name="UniqueCode" value="@Model.Item.UniqueCode" placeholder="XXX231Z" class="form-control">
+                    <input type="text" asp-for="Item.UniqueCode" id="UniqueCode" name="UniqueCode" value="@Model.Item.UniqueCode" placeholder="XXX231Z" class="form-control">
                      @Html.ValidationMessageFor(m => m.Item.UniqueCode, "", new { @class = "text-danger" })
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="col-form-label col-md-2">Quantity</label>
-                    <input type="number" id="Quantity" name="Quantity" value="@Model.Item.Quantity" placeholder="1000" class="form-control">
+                    <input type="number" asp-for="Item.Quantity" id="Quantity" name="Quantity" value="@Model.Item.Quantity" placeholder="1000" class="form-control">
                     @Html.ValidationMessageFor(m => m.Item.Quantity, "", new { @class = "text-danger" })
                 </div>
             </div>
         </div>
-        <div class="row">
+        <div class="row col-md-10 col-lg-10">
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="col-form-label col-md-2">Price</label>
-                    <input type="number" id="Price" name="Price" value="@Model.Item.Price" min="0.00" step="0.01" placeholder="0.00" class="form-control">
+                    <input type="number" asp-for="Item.Price" id="Price" name="Price" value="@Model.Item.Price" min="0.00" step="0.01" placeholder="0.00" class="form-control">
                     @Html.ValidationMessageFor(m => m.Item.Price, "", new { @class = "text-danger" })
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="col-form-label col-md-2">Suppliers</label>
-                    <select id="SuppliersId" name="SuppliersId" class="form-control">
+                    <select id="SuppliersId" asp-for="Item.SuppliersId" name="SuppliersId" class="form-control">
                         <option value="">--- select ---</option>
                         @foreach (var supplier in Model.Suppliers)
                         {
@@ -76,22 +76,23 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="col-form-label col-md-2">Status</label>
-                    <select id="Status" name="Status" class="form-control">
+                    <select id="Status" asp-for="Item.Status" name="Status" class="form-control">
                         <option value="">--- select ---</option>
                         @foreach (var status in Model.Statuses)
                         {
                             <option value="@status.Value">@status.Text</option>
                         }
                     </select>
+                    @Html.ValidationMessageFor(m => m.Item.Status, "", new { @class = "text-danger" })
                 </div>
             </div>
         </div>
-        <div class="row pt-2">
-            <div class="col-md-5"></div>
-            <div class="col-md-2">
+        <div class="row pt-3 col-md-10 col-lg-10">
+            <div class="col-md-6"></div>
+            <div class="col-md-4">
                 <input type="submit" value="Create" id="btnCreate" class="btn btn-primary" />
             </div>
-             <div class="col-md-5"></div>
+            <div class="col-md-2"></div>
         </div>
     </form>
 </div>
@@ -101,10 +102,10 @@
 <form asp-action="search" method="get">
     <div class="container pt-4 pb-3">
         <div class="row">
-            <div class="col-md-11">
+            <div class="col-md-10">
                 <input type="text" name="searchParam" value="@Model.SearchString" class="form-control"/>
             </div>
-            <div class="col">
+            <div class="col p-0">
                 <input type="submit" value="Search" id="btnSearch" class="btn btn-primary" class="form-control" />
             </div>
         </div>
@@ -116,10 +117,10 @@
 <form asp-action="filters" method="get" id="formFilters">
  <div class="container pt-4 pb-3">
     <div class="row form-row">
-       <div class="col-md-9">
+       <div class="col-md-11">
              <div class="row form-row">
-                <div class="col text-end">
-                    <label class="col-form-label">Status</label>
+                <div class="col-md-1 text-end px-0" style="width:5%;">
+                    <label class="col-form-label pr-5">Status</label>
                 </div>
                 <div class="col-md-2 col-lg-2">
                     <select id="Status" name="Status" class="form-select">
@@ -140,7 +141,8 @@
                         }
                     </select>
                 </div>
-                <div class="col-md-1 text-end">
+
+                <div class="col-md-1 text-end px-0">
                     <label class="col-form-label">Suppliers</label>
                 </div>
                 <div class="col-md-2 col-lg-2">
@@ -159,32 +161,30 @@
                             }
                         }
                     </select>
-                </div>
-
-                <div class="col-md-1 text-end">
+                 </div>
+                    <div class="col-md-1 text-end px-0" style="width:5%;">
                     <label class="col-form-label">From</label>
                 </div>
                 <div class="col-md-2 col-lg-2 text-start">
                     <div class="input-group date">
-                            <input id="start" name="start" maxlength="10" value="@start_date" type="date" class="form-control">
+                        <input id="start" name="start" maxlength="10" value="@start_date" type="date" class="form-control">
                     </div>
                 </div>
-
-                <div class="col-md-1 text-end">
+                <div class="col-md-1 text-end" style="width:5%;">
                     <label class="col-form-label">To</label>
                 </div>
-                <div class="col-md-2 col-lg-2">
+                <div class="col-md-2 col-lg-2 px-0">
                     <div class="input-group date">
-                            <input id="end" name="end" maxlength="10" value="@end_date" type="date" class="form-control">
+                        <input id="end" name="end" maxlength="10" value="@end_date" type="date" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-1">
+                    <div class="input-group date">
+                        <input type="button" id="btnCancel" name="cancel" class="btn btn-secondary" value="Cancel" />
                     </div>
                 </div>
             </div>
        </div>
-            <div class="col-md-2 col-lg-2">
-                <div class="input-group date">
-                    <button id="cancel" class="btn btn-secondary">Cancel</button>
-                </div>
-            </div>
     </div>
   </div>
 </form>
@@ -194,7 +194,7 @@
 <table class="table table-sm table-hover list">
     <thead>
         <tr>
-            <td colspan="10"> 
+            <td colspan="11"> 
                  <div id="msg-success" style="display:@display_succes;">
                      <div class="alert alert-success">@success_msg</div>
                 </div>
@@ -212,6 +212,7 @@
             <th class="text-center">Unique Code</th>
             <th class="text-center">Suppliers</th>
             <th class="text-center">Status</th>
+            <th class="text-center">Add Date</th>
             <th></th>
             <th></th>
         </tr>
@@ -278,6 +279,9 @@
                         </select>
                     </td>
                     <td>
+                        <p class="form-control form-control-plaintext">@item.AddDate.Date.ToShortDateString()</p>
+                    </td>
+                    <td>
                         <button type="button" class="btn btn-primary" onclick="SaveEdit(@item.Id)">Edit</button>
                     </td>
                     <td>
@@ -289,15 +293,16 @@
         else
         { 
             <tr>
-                <td colspan="9">No items available</td>
+                <td colspan="10">No items available</td>
             </tr>  
         }
     </tbody>
-    </table>
-    <form asp-action="Delete" method="post" name="form_delete" id="list-btn-multi">
-        <div id="" class="mb-3">
-          with <span class="badge bg-secondary rows-num"></span> checked rows:<br>
-          <input type="submit" name="delete" value="Delete" class="btn btn-danger on-delete-multi">
-        </div>
-        <input type="hidden" id="cbitems" name="cbitems" />
-    </form>
+</table>
+
+<form asp-action="Delete" method="post" name="form_delete" id="list-btn-multi">
+    <div id="" class="mb-3">
+        with <span class="badge bg-secondary rows-num"></span> checked rows:<br>
+        <input type="submit" name="delete" value="Delete" class="btn btn-danger on-delete-multi">
+    </div>
+    <input type="hidden" id="cbitems" name="cbitems" />
+</form>
