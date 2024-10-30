@@ -99,22 +99,20 @@
 
 <!-- Search Fields-->
 
-<form asp-action="search" method="get">
-    <div class="container pt-4 pb-3">
-        <div class="row">
-            <div class="col-md-10">
-                <input type="text" name="searchParam" value="@Model.SearchString" class="form-control"/>
-            </div>
-            <div class="col p-0">
-                <input type="submit" value="Search" id="btnSearch" class="btn btn-primary" class="form-control" />
-            </div>
+<form asp-action="filters" method="get" id="formFilters">
+<div class="container pt-4 pb-3">
+    <div class="row">
+        <div class="col-md-10">
+            <input type="text" name="searchParam" value="@Model.Filters.SearchString" class="form-control" />
+        </div>
+        <div class="col p-0">
+            <input type="submit" value="Search" id="btnSearch" class="btn btn-primary" class="form-control" />
         </div>
     </div>
-</form>
+</div>
 
 <!-- Filters Fields-->
 
-<form asp-action="filters" method="get" id="formFilters">
  <div class="container pt-4 pb-3">
     <div class="row form-row">
        <div class="col-md-11">

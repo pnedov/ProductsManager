@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using ProductsManager.Controllers;
 using ProductsManager.Models;
 using ProductsManager.Repository;
-using System.Collections.Generic;
-
 
 [Route("warehouse")]
 public class WarehouseController : Controller
@@ -108,42 +106,11 @@ public class WarehouseController : Controller
         return RedirectToAction("Index");
     }
 
-    [HttpGet("search")]
-    public async Task<IActionResult> SearchWarehouseItems(string searchParam, CancellationToken token)
-    {
-        WarehouseViewModel model = new();
-        if (string.IsNullOrEmpty(searchParam))
-        {
-            model.Items = await _repo.GetItemsAsync(token);
-        }
-        else
-        {
-            model.Items = await _repo.GetItemsBySearchAsync(searchParam, token);
-        }
-        model.Suppliers = await _repo.GetSuppliersAsync(token);
-        model.Statuses = Enum.GetValues<Statuses>()
-            .Select(e => new SelectListItem
-            {
-                Value = ((int)e).ToString(),
-                Text = e.ToString()
-            });
-        model.SearchString = searchParam;
-
-        return View("Index", model);
-    }
-
     [HttpGet("filters")]
     public async Task<IActionResult> FilterWarehouseItems(string? searchParam, string? productName, int? status, int? suppliersid, string? start, string? end, string? startUpd, string? endUpd, CancellationToken token)
     {
         WarehouseViewModel model = new();
-        if (!status.HasValue && !suppliersid.HasValue && string.IsNullOrEmpty(start) && string.IsNullOrEmpty(end))
-        {
-            model.Items = await _repo.GetItemsAsync(token);
-        }
-        else
-        {
-            model.Items = await _repo.GetItemsByFiltersAsync(searchParam, productName, status, suppliersid, start, end, startUpd, endUpd, token);
-        }
+        model.Items = await _repo.GetItemsByFiltersAsync(searchParam, productName, status, suppliersid, start, end, startUpd, endUpd, token);
         model.Suppliers = await _repo.GetSuppliersAsync(token);
         model.Statuses = Enum.GetValues<Statuses>()
             .Select(e => new SelectListItem
@@ -158,7 +125,7 @@ public class WarehouseController : Controller
             SuppliersId = suppliersid,
             StartAddSate = start,
             EndAddDate = end,
-            ProductName = productName
+            SearchString = searchParam
         };
 
         return View("Index", model);

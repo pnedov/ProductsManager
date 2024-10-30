@@ -24,114 +24,114 @@
         </div>
             <div class="col-md-2 mx-auto" style="display: inline-block; vertical-align: top;">
             <input type="submit" value="Search" id="btnSearch" class="btn btn-primary" />
-             <input type="button" id="btnCancel" class="btn btn-secondary" value="Cancel" />
+            <input type="button" id="btnCancel" class="btn btn-secondary" value="Cancel" />
         </div>
     </div>
 </div>
- <div class="container pt-4 pb-3">
-    <div class="row form-row">
-       <div class="col-md-10">
-            <div class="row form-row">
-               <div class="col-md-1 text-end px-0">
-               <label class="col-form-label">Status</label>
-            </div>
-            <div class="col-md-2 col-lg-2">
-                <select id="Status" name="Status" class="form-select">
-                    <option value="">--- select ---</option>
-                    @foreach (var status in Model.Statuses)
-                    {
-                        var selected_flag = int.Parse(status.Value) == status_id ? "selected" : "";
-
-                        if (!string.IsNullOrEmpty(selected_flag))
-                        {
-
-                            <option value="@status.Value" selected="@selected_flag">@status.Text</option>
-                        }
-                        else
-                        {
-                            <option value="@status.Value">@status.Text</option>
-                        }
-                    }
-                </select>
-            </div>
+<div class="container pt-4 pb-3">
+<div class="row form-row">
+    <div class="col-md-10">
+        <div class="row form-row">
             <div class="col-md-1 text-end px-0">
-                <label class="col-form-label">Suppliers</label>
-            </div>
-            <div class="col-md-2 col-lg-2">
-                <select id="SuppliersId" name="SuppliersId" class="form-select">
-                    <option value="">--- select ---</option>
-                    @foreach (var supplier in Model.Suppliers)
+            <label class="col-form-label">Status</label>
+        </div>
+        <div class="col-md-2 col-lg-2">
+            <select id="Status" name="Status" class="form-select">
+                <option value="">--- select ---</option>
+                @foreach (var status in Model.Statuses)
+                {
+                    var selected_flag = int.Parse(status.Value) == status_id ? "selected" : "";
+
+                    if (!string.IsNullOrEmpty(selected_flag))
                     {
-                        var selected_flag = supplier.Id == suppliers_id ? "selected" : "";
-                        if (!string.IsNullOrEmpty(selected_flag))
-                        {
-                            <option value="@supplier.Id" selected="@selected_flag">@supplier.Name</option>
-                        }
-                        else
-                        {
-                            <option value="@supplier.Id">@supplier.Name</option>
-                        }
+
+                        <option value="@status.Value" selected="@selected_flag">@status.Text</option>
                     }
-                </select>
-            </div>
-            <div class="col-md-1 text-end px-0">
-                <label class="col-form-label">Products</label>
-            </div>
-            <div class="col-md-2 col-lg-2">
-                    <select id="ProductName" name="ProductName" class="form-select">
-                    <option value="">--- select ---</option>
-                    @foreach (var product in Model.Products)
+                    else
                     {
-                        var selected_flag = product == product_name ? "selected" : "";
-                        if (!string.IsNullOrEmpty(selected_flag))
-                        {
-                            <option value="@product" selected="@selected_flag">@product</option>
-                        }
-                        else
-                        {
-                            <option value="@product">@product</option>
-                        }
+                        <option value="@status.Value">@status.Text</option>
                     }
-                </select>
-            </div>
-            </div>
-            <div class="row form-row pt-4">
-                <div class="col-md-1 text-end px-0">
-                    <label class="col-form-label">From Add</label>
-                </div>
-                <div class="col-md-2 text-start">
-                    <div class="input-group date">
-                        <input id="start_add" name="start_add" maxlength="10" value="@start_date_add" type="date" class="form-control">
-                    </div>
-                </div>
-                <div class="col-md-1 text-end px-0">
-                    <label class="col-form-label">To Add</label>
-                </div>
-                <div class="col-md-2">
-                    <div class="input-group date">
-                        <input id="end_add" name="end_add" maxlength="10" value="@end_date_add" type="date" class="form-control">
-                    </div>
-                </div>
-                    <div class="col-md-1 text-end px-0">
-                        <label class="col-form-label px-0 text-nowrap">From Update</label>
-                    </div>
-                    <div class="col-md-2 text-start">
-                        <div class="input-group date">
-                            <input id="start_upd" name="start_upd" maxlength="10" value="@start_date_upd" type="date" class="form-control">
-                        </div>
-                    </div>
-                    <div class="col-md-1 text-end px-0">
-                        <label class="col-form-label">To Update</label>
-                    </div>
-                    <div class="col-md-2">
-                        <div class="input-group date">
-                            <input id="end_upd" name="end_upd" maxlength="10" value="@end_date_upd" type="date" class="form-control">
-                        </div>
-                    </div>
+                }
+            </select>
+        </div>
+        <div class="col-md-1 text-end px-0">
+            <label class="col-form-label">Suppliers</label>
+        </div>
+        <div class="col-md-2 col-lg-2">
+            <select id="SuppliersId" name="SuppliersId" class="form-select">
+                <option value="">--- select ---</option>
+                @foreach (var supplier in Model.Suppliers)
+                {
+                    var selected_flag = supplier.Id == suppliers_id ? "selected" : "";
+                    if (!string.IsNullOrEmpty(selected_flag))
+                    {
+                        <option value="@supplier.Id" selected="@selected_flag">@supplier.Name</option>
+                    }
+                    else
+                    {
+                        <option value="@supplier.Id">@supplier.Name</option>
+                    }
+                }
+            </select>
+        </div>
+        <div class="col-md-1 text-end px-0">
+            <label class="col-form-label">Products</label>
+        </div>
+        <div class="col-md-2 col-lg-2">
+                <select id="ProductName" name="ProductName" class="form-select">
+                <option value="">--- select ---</option>
+                @foreach (var product in Model.Products)
+                {
+                    var selected_flag = product == product_name ? "selected" : "";
+                    if (!string.IsNullOrEmpty(selected_flag))
+                    {
+                        <option value="@product" selected="@selected_flag">@product</option>
+                    }
+                    else
+                    {
+                        <option value="@product">@product</option>
+                    }
+                }
+            </select>
+        </div>
+    </div>
+    <div class="row form-row pt-4">
+        <div class="col-md-1 text-end px-0">
+            <label class="col-form-label">From Add</label>
+        </div>
+        <div class="col-md-2 text-start">
+            <div class="input-group date">
+                <input id="start_add" name="start_add" maxlength="10" value="@start_date_add" type="date" class="form-control">
             </div>
         </div>
-   </div>
- </div>
+        <div class="col-md-1 text-end px-0">
+            <label class="col-form-label">To Add</label>
+        </div>
+        <div class="col-md-2">
+            <div class="input-group date">
+                <input id="end_add" name="end_add" maxlength="10" value="@end_date_add" type="date" class="form-control">
+            </div>
+        </div>
+            <div class="col-md-1 text-end px-0">
+                <label class="col-form-label px-0 text-nowrap">From Update</label>
+            </div>
+            <div class="col-md-2 text-start">
+                <div class="input-group date">
+                    <input id="start_upd" name="start_upd" maxlength="10" value="@start_date_upd" type="date" class="form-control">
+                </div>
+            </div>
+            <div class="col-md-1 text-end px-0">
+                <label class="col-form-label">To Update</label>
+            </div>
+            <div class="col-md-2">
+                <div class="input-group date">
+                    <input id="end_upd" name="end_upd" maxlength="10" value="@end_date_upd" type="date" class="form-control">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
 </form>
 
 <!-- *** Grid Items ***-->
