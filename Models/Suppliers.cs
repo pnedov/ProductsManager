@@ -32,6 +32,6 @@ public class Suppliers
     public int Status { get; set; }
 
     [ForeignKey("SuppliersId")]
-    public ICollection<WarehouseItem> WarehouseItem { get; set; } 
+    public ICollection<WarehouseItem> WarehouseItem { get; set; } = new List<WarehouseItem>();
 }
 

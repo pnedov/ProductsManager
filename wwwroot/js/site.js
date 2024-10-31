@@ -61,7 +61,7 @@ function ReloadCancel(id) {
     });
 }
 
-$("#addNewButton").click(function () {
+$(document).on('click', '#addNewButton', function () {
     $("#addNewForm").toggle();
 });
 
@@ -74,7 +74,6 @@ $(document).on('click', '#refresh', function () {
 });
 
 // * Multi delete functionalities * //
-
 //list check all/none handler
 $(document).on('click', '.on-list-chkall', function (e) {
     var $cbs = $(".multicb", this.form).prop('checked', this.checked);
@@ -111,13 +110,6 @@ $(document).on('click', '.on-list-chkall, .multicb', function (e) {
         //de-float
         $bm.removeClass('position-sticky');
         $bm.find('.rows-num').text('');
-    }
-    if ($this.is(".multicb")) {
-        if (this.checked) {
-            $this.closest("tr").addClass("selected");
-        } else {
-            $this.closest("tr").removeClass("selected");
-        }
     }
 
     //also fill item_id with comma-separated checked ids

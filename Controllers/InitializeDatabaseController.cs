@@ -23,7 +23,6 @@ public class InitializeDatabaseController : ControllerBase
         {
             await _service.InitializeDatabaseAsync(token);
 
-            //return Ok("result");
             return RedirectToAction("Index", "Warehouse");
         }
         catch (Exception ex)
