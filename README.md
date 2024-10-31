@@ -4,6 +4,14 @@ Includes functionality for actions with products: adding, changing, presenting, 
 The project includes three pages, one is a system page (responsible for creating databases, tables, and filling tables with data),
 two others for use by users (one is home, for presentation and CRUD operations), another one for reporting and analyzing data.
 
+How to run the project:
+1. Clone the repository to your local machine (in case you are using GitHub)
+2. Open the project in Visual Studio
+3. Make sure you have installed MSSQL Server 
+4. In the 'appsettings.json' file check the connection string and set your server name. The should stay 'Database=warehouse' stay as is.
+5. Run the project. 
+6. Creation of database, tables, and filling with data will be done automatically.
+
 Tehnologies:
 - .NET Core 8.0 / C#
 - ASP.NET Core
