@@ -33,3 +33,6 @@ Structure and design:
 
 This technology and architecture were chosen so that in the future it would be possible to easily extend the 
 functionality and integrate this project in a more complex system.
+
+![image](https://github.com/user-attachments/assets/64d7e83f-ab21-44fa-a38b-8d8faaef4067)
+
