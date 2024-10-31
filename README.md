@@ -5,7 +5,7 @@ The project includes three pages, one is a system page (responsible for creating
 two others for use by users (one is home, for presentation and CRUD operations), another one for reporting and analyzing data.
 
 How to run the project:
-1. Clone the repository to your local machine (in case you are using GitHub)
+1. Clone the repository to your local machine
 2. Open the project in Visual Studio
 3. Make sure you have installed MSSQL Server 
 4. In the 'appsettings.json' file check the connection string and set your server name. The 'Database=warehouse' should stay as is.
