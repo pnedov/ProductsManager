@@ -1,6 +1,6 @@
 ProductsManager - 
 is software based on the APS.NET Core web platform with an MSSQL database.
-Includes functionality for actions with products: adding, changing, presenting, searching and filtering by attributes.
+Includes functionality for actions with products: add, edit, delete, presenting, searching and filtering by attributes.
 The project includes three pages, one is a system page (responsible for creating databases, tables, and filling tables with data),
 two others for use by users (one is home, for presentation and CRUD operations), another one for reporting and analyzing data.
 
