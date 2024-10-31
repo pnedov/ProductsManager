@@ -8,7 +8,7 @@ How to run the project:
 1. Clone the repository to your local machine (in case you are using GitHub)
 2. Open the project in Visual Studio
 3. Make sure you have installed MSSQL Server 
-4. In the 'appsettings.json' file check the connection string and set your server name. The should stay 'Database=warehouse' stay as is.
+4. In the 'appsettings.json' file check the connection string and set your server name. The 'Database=warehouse' should stay as is.
 5. Run the project. 
 6. Creation of database, tables, and filling with data will be done automatically.
 
